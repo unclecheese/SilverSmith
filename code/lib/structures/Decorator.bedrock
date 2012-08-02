@@ -1,0 +1,17 @@
+[?php
+
+class <@= Key @>Decorator extends DataExtension
+{
+	/** //--// **/
+
+	<@= GeneratedCode @>
+
+	/** --//-- **/
+
+	public function updateCMSFields(FieldList $fields) {
+		$this->updateGeneratedCMSFields($fields);		
+	}
+
+	
+	
+}

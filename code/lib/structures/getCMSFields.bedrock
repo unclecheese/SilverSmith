@@ -1,0 +1,10 @@
+<@ if Decorator @>
+	public function updateCMSFields(FieldList $fields) {
+		$this->updateGeneratedCMSFields($fields);
+	}
+<@ else @>
+	public function getCMSFields() {
+		$fields = $this->getGeneratedCMSFields();
+		return $fields;
+	}
+<@ /if @>

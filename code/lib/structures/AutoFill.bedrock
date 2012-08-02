@@ -1,0 +1,34 @@
+<@ if Fields @>
+<@ each Fields @>
+		<@= AutoFill @>
+<@ /each @>
+<@ /if @>
+
+<@ if Components @>
+<@ each Components @>
+		<h3><@= Name @></h3>
+
+		<% loop <@= Name @> %>
+<@ if DefinedFields @>
+<@ each DefinedFields @>
+				<@= AutoFill @>
+<@ /each @>
+<@ /if @>
+<@ if Components @>
+<@ each Components @>
+				<h4><@= Name @></h4>
+
+				<% loop <@= Name @> %>
+<@ if DefinedFields @>
+<@ each DefinedFields @>
+						<@= AutoFill @>
+<@ /each @>
+<@ /if @>
+				<% end_loop %>
+				
+<@ /each @>
+<@ /if @>
+		<% end_loop %>
+
+<@ /each @>
+<@ /if @>

@@ -1,0 +1,136 @@
+PageTypes:
+  DataType: setting
+  UserDefined: true
+
+Fields:
+  DataType: setting
+  UserDefined: true
+
+Components:
+  DataType: setting
+  UserDefined: true
+
+Interface:
+  DataType: setting
+  BaseNodes:
+    Type:
+      DataType: string
+      PossibleValues: ::BedrockInterface.get_valid_interfaces
+      Description: Defines the type of interface used to manange the component relationship in the CMS
+      Example: grid
+    Summary:
+      DataType: setting
+      Description: Key/value pairs of FieldName: Label defining the fields displayed in a tabular interface
+      Example: "{Jobtitle: Job title}"
+  RequiredNodes: [Type]
+  
+
+PageType:
+  DataType: setting
+  AvailableNodes:      
+    DefaultSort:
+      DataType: string
+      Description: Defines the default sort order of a result set containing this object.
+      Example: "Created DESC"
+    AllowedChildren:
+      DataType: mixed          
+      UserDefined: true
+      Description: Defines the page types that are allowed to be children of this page type in the site tree. Can be a string (one) or an array (multiple).
+      Example: "[NewsPage, EventPage]"
+    Icon:
+      DataType: string
+      Description: A path to the image for the icon that will mark this page type in the CMS site tree
+      Example: mysite/images/icons/mypage.png
+    AllowedInstances:
+      DataType: integer
+      Description: The number of instances of this page that can be present in the site tree at one time
+      Example: 1
+    Hide:
+      DataType: mixed
+      UserDefined: true
+      Description: Hide field(s) from the CMS edit form. Can be a string (one) or an array (multiple).
+      Example: "[Content, MetaTitle]"
+    HideFromTab:
+      DataType: setting
+      UserDefined: true
+      Description: A key/value pair of TabName: FieldName to remove a specific field from a given tab
+      Example: "{Root.Content.Main: Content}"
+    Parent:
+      DataType: string
+      Description: The parent class of this page type
+      Example: NewsPage
+    Fields:
+      DataType: setting
+      Description: An array of Field objects that define the custom fields for this page type
+      Example: ""
+    Components:
+      DataType: setting
+      Description: An array of Component objects that define the custom data relationships for this page type
+      Example: ""
+      
+Field:  
+  DataType: setting
+  BaseNodes:
+    CMSField:
+      DataType: string
+      Description: The CMS field type used to edit this field in the CMS
+      Example: Text
+    DBField:
+      DataType: string
+      Description: Provides a custom database field type, other than what is implied by CMSField
+      Example: "Varchar(155)"
+    Tab:
+      DataType: string
+      Description: The tab on which to place this field
+      Example: Sidebar
+    Before:
+      DataType: string
+      Description: The existing field before which this field will be placed in the edit form
+      Example: Title
+  RequiredNodes: [CMSField]
+
+Component:
+  DataType: setting
+  AvailableNodes:
+    DefaultSort:
+      DataType: string
+      Description: Defines the default sort order of a result set containing this object.
+      Example: "Created DESC"      
+    Name:
+      DataType: string
+      Description: The name of this relationship as it relates to its parent page type or component
+      Example: Testimonials
+    Type:
+      DataType: string
+      PossibleValues: [one, many, manymany]
+      Description: The type of database relationship for this component.
+      Example: many
+    Tab:
+      DataType: string
+      Description: The tab in which this component should be managed
+      Example: Photos
+    Interface:
+      DataType: setting
+      Description: An array of properties for the interface used to manage this component relationship
+      Example: ""
+    Hide:
+      DataType: mixed
+      UserDefined: true
+      Description: Hide field(s) from the CMS edit form. Can be a string (one) or an array (multiple).
+      Example: "[Title]"
+    Parent:
+      DataType: string
+      Description: The parent class of this component (defaults to DataObject)
+      Example: DataObject
+    Fields:
+      DataType: setting
+      Description: An array of Field objects that define the custom fields for this page type
+      Example: ""
+    Components:
+      DataType: setting
+      Description: An array of Component objects that define the custom data relationships for this page type
+      Example: ""
+    Summary:
+      DataType: setting
+      Description: Key/value pairs of FieldName: Label defining the fields displayed in the list view in a results table
+      Example: "{Jobtitle: Job title}"

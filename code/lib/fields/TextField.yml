@@ -1,0 +1,5 @@
+DBField: Varchar(255)
+Label: Text (short)
+Aliases: [Text]
+Instantiate: |
+  TextField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))

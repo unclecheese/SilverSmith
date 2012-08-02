@@ -1,0 +1,5 @@
+DBField: Text
+Label: Email
+Aliases: [Email]
+Instantiate: |
+  EmailField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))

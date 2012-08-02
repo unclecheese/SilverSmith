@@ -1,0 +1,61 @@
+<@= ModelVars @>
+<@ if Icon @>
+	static $icon = '<@= Icon @>';
+
+
+<@ /if @>
+<@ if AllowedChildren @>
+	static $allowed_children = array (
+<@ each AllowedChildren @>
+		'<@= :Val @>',
+<@ /each @>
+	);
+
+
+<@ /if @>
+<@ if AllowedInstances @>
+	public function canCreate($member = null) {
+		return <@= :Name @>::get()->count() < <@= AllowedInstances @>;
+	}
+
+
+<@ /if @>
+<@ if IsFinal @>
+<@ if Decorator @>
+	public function updateGeneratedCMSFields(FieldList $fields) {
+<@ else @>
+	public function getGeneratedCMSFields() {
+		$fields = parent::getCMSFields();
+<@ /if @>
+<@ else @>
+<@ if Decorator @>
+	public function updateCMSFields(FieldList $fields) {
+<@ else @>
+	public function getCMSFields() {
+		$fields = parent::getCMSFields();
+<@ /if @>
+<@ /if @>
+<@ if Fields @><@ each Fields @>
+		$fields->addFieldToTab("<@= Tab @>", <@= Instantiation @><@ if Tab == "Root.Content.Main" @>, 'Content'<@ elseif Before @>, '<@= Before @>'<@ /if @>);
+<@ /each @><@ /if @>
+<@ if Components @><@ each Components @>
+<@ if Instantiation @>
+		$fields->addFieldToTab("<@= Tab @>", <@= Instantiation @>);
+<@ /if @>
+<@ /each @><@ /if @>
+<@ if Fields @><@ each Fields @>
+<@= Update @>
+<@ /each @><@ /if @>
+<@ if Components @><@ each Components @>
+<@= Update @>
+<@ /each @><@ /if @>
+<@ if Hide @><@ each Hide @>
+		$fields->removeByName('<@= :Val @>');
+<@ /each @><@ /if @>
+<@ if HideFromTab @><@ each HideFromTab @>
+		$fields->removeFieldFromTab("<@= :Name @>", '<@= :Val @>');
+<@ /each @><@ /if @>
+
+		return $fields;
+	}
+

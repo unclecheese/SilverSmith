@@ -1,0 +1,13 @@
+DBField: HTMLText
+Label: Rich Text Editor
+Aliases: [Wysiwyg]
+Instantiate: |  
+  HtmlEditorField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
+Update: |
+  <@ if Rows @>
+  <@= Var @>->setRows(<@= Rows @>);
+  <@ /if @>
+  <@ if Cols @>
+  <@= Var @>->setCols(<@= Cols @>);
+  <@ /if @>
+

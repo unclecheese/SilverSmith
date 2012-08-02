@@ -1,0 +1,5 @@
+DBField: Int
+Label: Number
+Aliases: [Number, Numeric]
+Instantiate: |
+  NumericField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))

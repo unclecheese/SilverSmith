@@ -1,0 +1,19 @@
+[?php
+
+class <@= Key @> extends <@= Parent @> {
+	
+	/** //--// **/
+
+<@= GeneratedCode @>
+
+	/** --//-- **/
+
+<@ if IsFinal @>
+	public function getCMSFields() {
+		$fields = $this->getGeneratedCMSFields();
+		return $fields;
+	}
+<@ /if @>
+	
+	
+}

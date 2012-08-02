@@ -1,0 +1,21 @@
+HasOne: ->ImageClass
+Label: Image Upload
+Aliases: [Image]
+Instantiate: |
+  UploadField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
+Update: |
+  <@ if UploadFolder @>
+  {T}{T}<@= Var @>->setFolderName('<@= UploadFolder @>');
+  <@ /if @>  
+  {T}{T}<@= Var @>->getValidator()->setAllowedExtensions(array('jpg', 'jpeg', 'png', 'gif'));
+  <@ if ManualUpload @>
+  {T}{T}<@= Var @>->setConfig('autoUpload', false);
+  <@ /if @>
+  <@ if PreviewWidth @>
+  {T}{T}<@= Var @>->setConfig('previewMaxWidth', <@= PreviewWidth @>);
+  <@ /if @>
+  <@ if PreviewHeight @>
+  {T}{T}<@= Var @>->setConfig('previewMaxHeight', <@= PreviewHeight @>);
+  <@ /if @>
+AutoFill: |
+  <% if <@= Name @> %>$<@= Name @>.SetWidth(300)<% end_if %>

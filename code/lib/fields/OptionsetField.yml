@@ -1,0 +1,13 @@
+DBField: Enum
+Label: Radio buttons
+Aliases: [Radios, Radio, Options]
+Instantiate: |
+  <@ if Map @>
+  OptionsetField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'), array(
+  	<@ each Map @>
+  		'<@= :Val @>' => '<@= :Val @>'
+  	<@ /each @>
+  ));
+  <@ else @>
+  OptionsetField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'), array())
+  <@ /if @>

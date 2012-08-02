@@ -1,0 +1,7 @@
+DBField: Time
+Label: Time
+Aliases: [Time]
+Instantiate: |
+  TimeField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
+AutoFill: |
+  <div><strong><@= Label @></strong>: $<@= Name @>.Nice</div>

@@ -1,0 +1,9 @@
+Relations: [manymany]
+Instantiate: |
+  CheckboxSetField::create('<@= Name @>', _t('<@= Class @>.<@= Interface.Entity @>', '<@= Interface.Heading @>'))
+Update: |
+  <@ if LabelField @>
+  {T}{T}<@= Interface.Var @>->setSource(<@= Class @>::get()->map('ID', <@= LabelField @>));
+  <@ else @>
+  {T}{T}<@= Interface.Var @>->setSource(<@= Class @>::get()->map());
+  <@ /if @>

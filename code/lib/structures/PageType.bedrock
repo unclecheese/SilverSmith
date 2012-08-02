@@ -1,0 +1,20 @@
+[?php
+
+class <@= Key @> extends <@= Parent @> {
+
+	/** //--// **/
+
+<@= GeneratedCode @>
+
+	/** --//-- **/
+<@ if IsFinal @>
+<@= GetCMSFieldsCode @>	
+<@ /if @>
+
+}
+
+class <@= Key @>_Controller extends <@= Parent @>_Controller {
+	
+	/** /-/ **//** -/- **/
+
+}

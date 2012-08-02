@@ -1,0 +1,207 @@
+AllowedActions:
+  build-code:
+    ProjectRequired: true
+    Description: 
+      - Parses the project YAML file, generates PHP code
+      - for all page types and components, and build 
+      - the database.
+      - ""
+      - Examples
+      - silversmith build-code
+      - silversmith build-code -module mymodule
+    Options:
+      file:
+        arg: "-file"
+        description: 
+          - The path to the project YAML file. 
+          - (Defaults to <project dir>/_project.yml)
+      module:
+        arg: "-module"
+        description: 
+          - The module directory in which to build 
+          - code and templates. (Defaults to $project)
+  
+  build-templates:
+    ProjectRequired: true
+    Description: 
+      - Creates templates in the theme Layout directory
+      - for any page types that do not have a template.
+      - ""
+      - Examples
+      - silversmith build-templates --autofill
+      - silversmith build-templates -theme mytheme
+    Options:
+      file:
+        arg: "-file"
+        description: 
+          - The path to the project YAML file. 
+          - (Defaults to <project dir>/_project.yml)
+      module:
+        arg: "-module"
+        description: 
+          - The module directory in which to build 
+          - code and templates. (Defaults to $project)
+      theme:
+        arg: "-theme"
+        description: 
+          - The theme in which to build the templates. 
+          - (Defaults to SSViewer::current_theme())
+      autofill:
+        arg: "--autofill"
+        description: 
+          - Auto-populates the template with example 
+          - template code using the defined fields 
+          - and components.
+      source:
+        arg: "-source"
+        description:
+          - Specify the source file to from which to
+          - generate new templates. Defaults to
+          - Page.ss
+      list:
+        arg: "-list"
+        description:
+          - Specify a list of templates to create
+          - (Comma separated)
+      force:
+        arg: "--force"
+        description:
+          - Overwrite all templates
+
+  build-fixtures:
+    ProjectRequired: true
+    Description: 
+      - Rebuilds the site tree in the CMS with 
+      - an architecture specified in a text file. 
+      - Seeds content, and creates new page types 
+      - where necessary.
+      - ""
+      - Examples
+      - silversmith build-fixtures
+      - sivlersmith build-fixtures -seeding-level 2
+    Options:
+      file:
+        arg: "-file"
+        description: 
+          - The source file for the architecture. 
+          - (Defaults to <project dir>/_fixtures.txt)
+      seeding-level:
+        arg: "-seeding-level"
+        description: 
+          - The level of depth to use for content seeding. 
+          - 0 = none
+          - 1 = Seed Content field only
+          - 2 = Seed all page fields
+          - 3 = Seed all page fields, create components
+  
+  seed-content:
+    ProjectRequired: true
+    Description:
+      - Creates new instances of the given DataObject
+      - or SiteTree class provided, and seeds content.
+      - ""
+      - Examples
+      - silversmith seed-content NewsPage
+      - silversmith seed-content NewsPage -parent 12 -seeding-level 2
+      - silversmith seed-content NewsPage -parent "Our News"
+      - silversmith seed-content TeamMember -parent our-team -parent-field TeamPageID
+    Options:
+      count:
+        arg: "-count"
+        description:
+          - How many instances to create
+          - (Defaults to 10)
+      seeding-level:
+        arg: "-seeding-level"
+        description:
+          - The level of depth to use for content seeding
+          - (See "build-fixtures")
+      parent:
+        arg: "-parent"
+        description:
+          - An ID, URLSegment, or Title of the parent
+          - page for this new content.
+      parent-field:
+        arg: "-parent-field"
+        description:
+          - The field name that stores the parent ID.
+          - (Defaults to ParentID, for SiteTree instances)
+      verbose:
+        arg: "--verbose"
+        description:
+          - Turns on verbose mode. Shows all fields
+          - and their values for each object created
+
+  add-sample-assets:
+    ProjectRequired: true
+    Description:
+      - Adds sample assets to the Files & Images
+      - section. Used for content seeding to
+      - auto-populate any upload fields.
+
+  template-genius:
+    Description: 
+      - < NOT IMPLEMENTED YET >
+    Options: {}
+  
+  uninstall:
+    Description: 
+      - Uninstalls the SilverSmith command-line tools.
+    Options:
+      force:
+        arg: "--force"
+        description: 
+          - Forces the uninstall without confirmation    
+
+  init-module:
+    ProjectRequired: true
+    Description: 
+      - Creates a new module directory with all 
+      - necessary subdirectories and _config.php.
+      - ""
+      - Example
+      - silversmith init-module photo_gallery
+    Options: {}
+
+  init:
+    ProjectRequired: true
+    Description: 
+      - Initializes SilverSmith by creating a 
+      - _project.yml and example _fixtures.txt file.
+      - ""
+      - Examples
+      - silversmith init
+      - silversmith init --example
+    Options:
+      example:
+        arg: "--example"
+        description:
+          - Populates the _project.yaml and _fixtures.txt
+          - with example data
+      no-assets:
+        arg: "--no-assets"
+        description:
+          - Bypasses the addition of sample
+          - assets (see "add-sample-assets")
+
+  upgrade:
+    Description: 
+      - Upgrades SilverSmith to the latest version
+    Options: {}    
+  
+  spec:
+    Description:
+      - Shows the full YAML specification for a
+      - project definition
+    Options: {}
+
+  version:
+    Description: 
+      - Get the version ID for this build of SilverSmith
+    Options: {}    
+  
+  help:
+    Description: 
+      - Displays this help screen
+    Options: {}
+

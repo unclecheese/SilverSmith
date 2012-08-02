@@ -1,0 +1,17 @@
+DBField: ->EnumField
+Label: Dropdown
+Aliases: [Dropdown]
+Instantiate: |
+  <@ if Map @>
+  DropdownField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'), array(
+  	<@ each Map @>
+  		'<@= :Val @>' => '<@= :Val @>',
+  	<@ /each @>
+  {T}))
+  <@ else @>
+  DropdownField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>','<@= EscapedLabel @>'), array())
+  <@ /if @>
+Update: |
+  <@ if EmptyString @>
+  {T}{T}<@= Var @>->setEmptyString("<@= EmptyString @>");
+  <@ /if @>

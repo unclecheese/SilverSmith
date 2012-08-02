@@ -1,0 +1,28 @@
+Relations: [many, manymany]
+Label: Multiple file upload
+Instantiate: |
+  UploadField::create('<@= Name @>', _t('<@= Class @>.<@= Interface.Entity @>', '<@= Interface.Heading @>'))
+Update: |
+  <@ with Interface @><@ if UploadFolder @>
+  {T}{T}<@= Var @>->setFolderName("<@= UploadFolder @>");
+  <@ /if @>
+  <@ if AllowedFileTypes @>
+  {T}{T}<@= Var @>->getValidator()->setAllowedExtensions(array<@ each AllowedFileTypes @>"<@= :Val @>",<@ /each @>));
+  <@ /if @>
+  <@ if ManualUpload @>
+  {T}{T}<@= Var @>->setConfig('autoUpload', false);
+  <@ /if @>
+  <@ if PreviewWidth @>
+  {T}{T}<@= Var @>->setConfig('previewMaxWidth', <@= PreviewWidth @>);
+  <@ /if @>
+  <@ if PreviewHeight @>
+  {T}{T}<@= Var @>->setConfig('previewMaxHeight', <@= PreviewHeight @>);
+  <@ /if @><@ /with @>
+AutoFill: |
+  <% if <@= Name @> %>
+  <ul>
+  <% with <@= Name @> %>
+  <li><a href="$URL">Download $Filename ($Size)</a></li>
+  <% end_with %>
+  <% end_if %>
+

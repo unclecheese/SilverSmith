@@ -1,0 +1,45 @@
+PageTypes:
+  HomePage:
+    Fields:
+      BannerImage: {CMSField: Image, UploadFolder: home-images, Tab: Banner}
+      BannerCaption: {CMSField: Text, Tab: Banner}
+      FeaturedNewsStory: {CMSField: RelationDropdown, Map: NewsPage}
+  StaffPage:
+    Components:
+      StaffMember:
+        Type: many
+        Interface:
+          Type: grid
+        Fields:
+          Name: {CMSField: Text}
+          JobTitle: {CMSField: Text}
+          Photo: {CMSField: Image}
+        Components:
+          ServiceArea:
+            Type: manymany
+            Interface:
+              Type: checkboxes
+              Heading: Choose service areas
+  NewsHolder:
+    AllowedChildren: [NewsPage]
+  NewsPage:
+    Fields:
+      Date: {CMSField: Date, Style: calendar}
+      Download: {CMSField: File, Tab: Download}
+  EventsHolder:
+    AllowedChildren: [EventPage]
+  EventPage:
+    Fields:
+      StartDate: {CMSField: Date, Style: calendar, Tab: Dates}
+      EndDate: {CMSField: Date, Style: calendar, Tab: Dates}
+      StartTime: {CMSField: Time, Tab: Dates}
+      EndTime: {CMSField: Time, Tab: Dates}
+  ServiceHolder:
+    AllowedChildren: [ServiceArea]
+  ServiceArea: {}
+  ContactPage: {}
+
+
+
+
+Components: {}

@@ -1,0 +1,13 @@
+DBField: Date
+Label: Date
+Aliases: [Date, DatePicker, CalendarDateField, Calendar, DatePickerField]
+Instantiate: |
+  DateField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
+Update: |
+  <@ if Style == 'dmy' @>
+  {T}{T}<@= Var @>->setConfig('dmyfields',true);
+  <@ else @>
+  {T}{T}<@= Var @>->setConfig('showcalendar',true);
+  <@ /if @>
+AutoFill: |
+  <div><strong><@= Label @></strong>: $<@= Name @>.Nice</div>

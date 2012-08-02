@@ -1,0 +1,10 @@
+Relations: [manymany]
+Instantiate: |
+  ListboxField::create('<@= Name @>', _t('<@= Class @>.<@= Interface.Entity @>', '<@= Interface.Heading @>'))
+  {T}{T}{T}->setMultiple(true)
+Update: |
+  <@ if LabelField @>
+  {T}{T}<@= Interface.Var @>->setSource(<@= Class @>::get()->map('ID', <@= LabelField @>)->toArray());
+  <@ else @>
+  {T}{T}<@= Interface.Var @>->setSource(<@= Class @>::get()->map()->toArray());
+  <@ /if @>

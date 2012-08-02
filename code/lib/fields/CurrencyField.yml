@@ -1,0 +1,7 @@
+DBField: Currency
+Label: Currency
+Aliases: [Currency, Money]
+Instantiate: |
+  CurrencyField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
+AutoFill: |
+  <div><strong><@= Label @></strong>: $<@= Name @>.Nice</div>
