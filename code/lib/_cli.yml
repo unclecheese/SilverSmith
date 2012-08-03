@@ -144,7 +144,7 @@ AllowedActions:
       - < NOT IMPLEMENTED YET >
     Options: {}
   
-  uninstall:
+  cli-uninstall:
     Description: 
       - Uninstalls the SilverSmith command-line tools.
     Options:

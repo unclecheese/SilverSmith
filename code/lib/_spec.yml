@@ -15,12 +15,12 @@ Interface:
   BaseNodes:
     Type:
       DataType: string
-      PossibleValues: ::BedrockInterface.get_valid_interfaces
+      PossibleValues: []
       Description: Defines the type of interface used to manange the component relationship in the CMS
       Example: grid
     Summary:
       DataType: setting
-      Description: Key/value pairs of FieldName: Label defining the fields displayed in a tabular interface
+      Description: "Key/value pairs of FieldName: Label defining the fields displayed in a tabular interface"
       Example: "{Jobtitle: Job title}"
   RequiredNodes: [Type]
   
@@ -53,7 +53,7 @@ PageType:
     HideFromTab:
       DataType: setting
       UserDefined: true
-      Description: A key/value pair of TabName: FieldName to remove a specific field from a given tab
+      Description: "A key/value pair of TabName: FieldName to remove a specific field from a given tab"
       Example: "{Root.Content.Main: Content}"
     Parent:
       DataType: string
@@ -91,6 +91,7 @@ Field:
 
 Component:
   DataType: setting
+  RequiredNodes: []
   AvailableNodes:
     DefaultSort:
       DataType: string
@@ -132,5 +133,5 @@ Component:
       Example: ""
     Summary:
       DataType: setting
-      Description: Key/value pairs of FieldName: Label defining the fields displayed in the list view in a results table
+      Description: "Key/value pairs of FieldName: Label defining the fields displayed in the list view in a results table"
       Example: "{Jobtitle: Job title}"

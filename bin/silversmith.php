@@ -85,22 +85,24 @@ if ($allowed_actions->get($action)->getProjectRequired()) {
     
     $project_dir = isset($PARAMS['module']) ? $PARAMS['module'] : project();
     SilverSmith::set_project_dir($project_dir);
-
     if ($action != "init") {
         $yml_file = isset($PARAMS['file']) ? $PARAMS['file'] : "_project.yml";
         $yml_path = SilverSmith::get_project_dir()."/$yml_file";        
         if (!file_exists($yml_path)) {
             fail("File $yml_path does not exist. Use 'silversmith init' to create it.");
         }
-        state("Bootstrapping SilverSmith...");
-        SilverSmith::set_yaml_path($yml_file);
+        state("Bootstrapping SilverSmith...");        
+        SilverSmith::set_yaml_path($yml_path);
         SilverSmithProject::load($yml_path);
         SilverSmith::load_field_manifest();
         SilverSmith::load_class_manifest();
         SilverSmith::load_interface_manifest();
+        
+        // Check for an upgrade every hour
+        $time = time();
         $stamp = @file_get_contents($script_dir."/upgrade");
-        if(!$stamp) $stamp = 0;
-        $diff = time() - (int) $stamp;
+        if(!$stamp) $stamp = $time;
+        $diff = $time - (int) $stamp;
         if($diff > 3600) {
             say("Checking for upgrade...");
             SilverSmith::upgrade();

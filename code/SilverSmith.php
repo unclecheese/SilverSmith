@@ -42,7 +42,7 @@ class SilverSmith {
         $old_dir = getcwd();
         chdir(self::$script_dir);
         exec("git fetch");
-        $response = ("/usr/local/bin/git diff master origin/master");
+        $response = exec("/usr/local/bin/git diff master origin/master");
         chdir($old_dir);
         if(!empty($response)) {
             return true;
@@ -345,7 +345,7 @@ class SilverSmith {
     
     
     
-    public function build_templates($params = array ()) {
+    public static function build_templates($params = array ()) {
         $theme_dir = isset($params['theme']) ? "themes/" . $params['theme'] : false;
         $force     = isset($params['force']);
         $specificTemplates = isset($params['list']) ? explode(',',$params['list']) : false;
@@ -789,8 +789,8 @@ class SilverSmith {
         say("    Fields:");
         say("      Tagline:");
         say("");
-        $required = (array) SilverSmithSpec::get("Field.RequiredNodes");
-        foreach (SilverSmithSpec::get("Field.BaseNodes") as $key => $node) {
+        $required = SilverSmithSpec::get("Field.RequiredNodes")->toArray();
+        foreach (SilverSmithSpec::get("Field.BaseNodes") as $key => $node) {            
             $r = in_array($key, $required) ? ", required" : "";
             $v = "";
             if ($vals = $node->getPossibleValues()) {
@@ -805,7 +805,8 @@ class SilverSmith {
         say("    Components:");
         say("      Testimonial:");
         say("");
-        $required = (array) SilverSmithSpec::get("Component.RequiredNodes");
+        $required = SilverSmithSpec::get("Component.RequiredNodes");
+        if($required) $required = $required->toArray();
         foreach (SilverSmithSpec::get("Component.AvailableNodes") as $key => $node) {
             if (in_array($key, array(
                 'Fields',
@@ -816,7 +817,7 @@ class SilverSmith {
             $r = in_array($key, $required) ? ", required" : "";
             $v = "";
             if ($vals = $node->getPossibleValues()) {
-                $v = " (" . implode(',', $vals) . ")";
+                $v = " (" . implode(',', $vals->toArray()) . ")";
             }
             say("        ## {$node->getDescription()} [{$node->getDataType()}{$r}{$v}]");
             say("        {$key}: {$node->getExample()}");
@@ -825,12 +826,13 @@ class SilverSmith {
         say("        ## Define the interface used to manage this component in the context of the page");
         say("        Interface:");
         say("");
-        $required = (array) SilverSmithSpec::get("Interface.RequiredNodes");
+        $required = SilverSmithSpec::get("Interface.RequiredNodes");
+        if($required) $required = $required->toArray();        
         foreach (SilverSmithSpec::get("Interface.BaseNodes") as $key => $node) {
             $r = in_array($key, $required) ? ", required" : "";
             $v = "";
-            if ($vals = $node->getPossibleValues()) {
-                $v = " (" . implode(',', $vals) . ")";
+            if ($vals = $node->getPossibleValues()) {                
+                $v = " (" . implode(',', $vals->toArray()) . ")";
             }
             say("          ## {$node->getDescription()} [{$node->getDataType()}{$r}{$v}]");
             say("          {$key}: {$node->getExample()}");
@@ -840,7 +842,8 @@ class SilverSmith {
         say("        Fields:");
         say("          Author:");
         say("");
-        $required = (array) SilverSmithSpec::get("Field.RequiredNodes");
+        $required = SilverSmithSpec::get("Field.RequiredNodes");
+        if($required) $required = $required->toArray();
         foreach (SilverSmithSpec::get("Field.BaseNodes") as $key => $node) {
             if (in_array($key, array(
                 'Tab',
@@ -850,14 +853,16 @@ class SilverSmith {
             $r = in_array($key, $required) ? ", required" : "";
             $v = "";
             if ($vals = $node->getPossibleValues()) {
-                $v = " (" . implode(',', $vals) . ")";
+                $v = " (" . implode(',', $vals->toArray()) . ")";
             }
             
             say("            ## {$node->getDescription()} [{$node->getDataType()}{$r}{$v}]");
             say("            {$key}: {$node->getExample()}");
             say("");
         }
-        $required = (array) SilverSmithSpec::get("PageType.RequiredNodes");
+        $required = SilverSmithSpec::get("PageType.RequiredNodes");
+        if($required) $required = $required->toArray();
+
         foreach (SilverSmithSpec::get("PageType.AvailableNodes") as $key => $node) {
             if (in_array($key, array(
                 'Fields',
@@ -867,7 +872,7 @@ class SilverSmith {
             $r = in_array($key, $required) ? ", required" : "";
             $v = "";
             if ($vals = $node->getPossibleValues()) {
-                $v = " (" . implode(',', $vals) . ")";
+                $v = " (" . implode(',', $vals->toArray()) . ")";
             }
             say("    ## {$node->getDescription()} [{$node->getDataType()}{$r}{$v}]");
             say("    {$key}: {$node->getExample()}");
@@ -878,7 +883,9 @@ class SilverSmith {
         say("Components:");
         say("  Client:");
         say("");
-        $required = (array) SilverSmithSpec::get("Component.RequiredNodes");
+        $required = SilverSmithSpec::get("Component.RequiredNodes");
+        if($required) $required = $required->toArray();
+
         foreach (SilverSmithSpec::get("Component.AvailableNodes") as $key => $node) {
             if (in_array($key, array(
                 'Fields',
@@ -891,7 +898,7 @@ class SilverSmith {
             $r = in_array($key, $required) ? ", required" : "";
             $v = "";
             if ($vals = $node->getPossibleValues()) {
-                $v = " (" . implode(',', $vals) . ")";
+                $v = " (" . implode(',', $vals->toArray()) . ")";
             }
             say("    ## {$node->getDescription()} [{$node->getDataType()}{$r}{$v}]");
             say("    {$key}: {$node->getExample()}");
@@ -903,6 +910,8 @@ class SilverSmith {
     
 
     public static function help($params = array ()) {
+        $cli = new BedrockYAML(self::$script_dir."/code/lib/_cli.yml");
+        $allowed_actions = $cli->getAllowedActions();
         say(cell("Command", 20, true, "grey", "on_white") . cell("Description", 50, true, "grey", "on_white") . cell("Options", 50, true, "grey", "on_white"));
         foreach ($allowed_actions as $a) {
             $options = array();
@@ -914,7 +923,7 @@ class SilverSmith {
                 $options[] = "";
             }
             array_pop($options);
-            $descriptions = $a->getDescription();
+            $descriptions = $a->getDescription()->toArray();
             $source       = (sizeof($options) > sizeof($descriptions)) ? $options : $descriptions;
             
             for ($i = 0; $i < sizeof($source); $i++) {
