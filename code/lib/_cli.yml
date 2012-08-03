@@ -134,6 +134,7 @@ AllowedActions:
 
   add-sample-assets:
     ProjectRequired: true
+    Options: {}
     Description:
       - Adds sample assets to the Files & Images
       - section. Used for content seeding to
