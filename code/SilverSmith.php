@@ -39,8 +39,9 @@ class SilverSmith {
 
 
 	public static function is_upgrade_available() {
-        exec(self::$script_dir."/git fetch");
-        $response = (self::$script_dir."/git diff master origin/master");
+        chdir(self::$script_dir);
+        exec("git fetch");
+        $response = ("git diff master origin/master");
         if(!empty($response)) {
             return true;
         }
@@ -760,8 +761,9 @@ class SilverSmith {
         if (self::is_upgrade_available()) {
             $response = ask("An upgrade is available. Install now? (y/n)");
             if (strtolower($response) == "y") {
-                exec(self::$script_dir."/git reset --hard");
-                exec(self::$script_dir."/git pull");
+                chdir(self::$script_dir);
+                exec("git reset --hard");
+                exec("git pull");
                 $fh = fopen(self::$script_dir."/upgrade","w");
                 fwrite($fh, time());
                 fclose($fh);
