@@ -20,7 +20,6 @@ require_once("{$script_dir}/code/lib/thirdparty/TextDiff.php");
 
 // Bootstrap the SilverSmith class
 SilverSmith::set_cli(true);
-say($script_dir);
 SilverSmith::set_script_dir($script_dir);
 SilverSmithDefaults::load(SilverSmith::get_script_dir() . "/code/lib/_defaults.yml");
 SilverSmithSpec::load(SilverSmith::get_script_dir() . "/code/lib/_spec.yml");
