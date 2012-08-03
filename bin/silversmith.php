@@ -98,6 +98,14 @@ if ($allowed_actions->get($action)->getProjectRequired()) {
         SilverSmith::load_field_manifest();
         SilverSmith::load_class_manifest();
         SilverSmith::load_interface_manifest();
+
+        if($stamp = @file_get_contents($script_dir."/upgrade")) {
+            $diff = time() - (int) $stamp;
+            if($diff > 3600) {
+                say("Checking for upgrade...");
+                SilverSmith::upgrade();
+            }
+        }
         say("done");        
     }
 }

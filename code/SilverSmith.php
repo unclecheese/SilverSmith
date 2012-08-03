@@ -39,9 +39,12 @@ class SilverSmith {
 
 
 	public static function is_upgrade_available() {
-    	$url    = "http://www.silversmithproject.com/check_version.php?v=" . self::get_silversmith_version();
-    	$result = @file_get_contents($url);
-    	return ($result == "upgrade");
+        exec(self::$script_dir."/git fetch");
+        $response = (self::$script_dir."/git diff master origin/master");
+        if(!empty($response)) {
+            return true;
+        }
+        return false;
 	}
 
 
@@ -674,11 +677,11 @@ class SilverSmith {
     }
     
     
-    public static function uninstall($params = array ()) {
-        $response = (isset($params['force'])) ? "y" : ask("Are you sure you want to uninstall SilverSmith? (y/n)");
+    public static function cli_uninstall($params = array ()) {
+        $response = (isset($params['force'])) ? "y" : ask("Are you sure you want to uninstall the SilverSmith CLI tools? (y/n)");
         if (strtolower($response) == "y") {
-            exec("sudo rm -rf self::$script_dir");
-            exec("sudo rm /usr/local/bin/silversmith3");
+            exec("sudo rm -rf /usr/local/lib/silversmith");
+            exec("sudo rm /usr/local/bin/silversmith");
         }
     }
     
@@ -757,8 +760,11 @@ class SilverSmith {
         if (self::is_upgrade_available()) {
             $response = ask("An upgrade is available. Install now? (y/n)");
             if (strtolower($response) == "y") {
-                exec("silversmith uninstall --force");
-                exec("curl http://www.silversmithproject.com/install | sh");
+                exec(self::$script_dir."/git reset --hard");
+                exec(self::$script_dir."/git pull");
+                $fh = fopen(self::$script_dir."/upgrade","w");
+                fwrite($fh, time());
+                fclose($fh);
             } else
                 die();
         } else {
@@ -767,10 +773,6 @@ class SilverSmith {
     }
 
     
-    public static function version() {
-        say("Version ID: " . self::get_silversmith_version());
-        die();
-    }
     
     
     public static function spec($params = array ()) {
