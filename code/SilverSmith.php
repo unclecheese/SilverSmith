@@ -767,8 +767,8 @@ class SilverSmith {
                 $fh = fopen(self::$script_dir."/upgrade","w");
                 fwrite($fh, time());
                 fclose($fh);
-            } else
-                die();
+            }
+            return; 
         } else {
             say("SilverSmith is up to date.");
         }
