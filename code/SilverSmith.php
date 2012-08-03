@@ -25,38 +25,6 @@ class SilverSmith {
 
 
 
-	// public static function set_project_dir($dir) {
-	// 	self::$project_dir = $dir;
-	// }
-
-
-	// public static function set_script_dir($dir) {
-	// 	self::$script_dir = $dir;
-	// }
-
-
- //    public static function get_script_dir() {
- //        return self::$script_dir;
- //    }
-
-
- //    public static function get_project_dir() {
- //        return self::$project_dir;
- //    }
-
-
- //    public static function set_cli($bool = true) {
- //        self::$cli = true;
- //    }
-
-
- //    public static function is_cli() {
- //        return self::$cli;
- //    }
-
-
-
-
 	protected static function get_subclasses($parentClassName) {
 	    $classes = array();
 	    foreach (get_declared_classes() as $className) {
@@ -68,9 +36,6 @@ class SilverSmith {
 	
 
 
-	public static function get_silversmith_version() {
-    	return trim(@file_get_contents(self::$script_dir . "/../../version"));
-	}
 
 
 	public static function is_upgrade_available() {
