@@ -92,15 +92,15 @@ class SilverSmithSpec_Validator
             $value      = $setting->get($name);
             $is_setting = $value instanceof BedrockNode;
             $class      = $result->getBaseClass();
-            $validator  = BedrockSpec::get($name);
+            $validator  = SilverSmithSpec::get($name);
             if (!$validator) {
-                $validator = BedrockSpec::get($class);
+                $validator = SilverSmithSpec::get($class);
             }
             if (!$validator) {
-                $validator = BedrockSpec::get($class . ".AvailableNodes.{$name}");
+                $validator = SilverSmithSpec::get($class . ".AvailableNodes.{$name}");
             }
             if (!$validator && $parent_class) {
-                $validator = BedrockSpec::get($parent_class . ".AvailableNodes.{$name}");
+                $validator = SilverSmithSpec::get($parent_class . ".AvailableNodes.{$name}");
             }
             
             if (!$validator) {
