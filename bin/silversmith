@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+
+function resolve_symlink {
+    SCRIPT=$1 NEWSCRIPT=''
+    until [ "$SCRIPT" = "$NEWSCRIPT" ]; do
+        if [ "${SCRIPT:0:1}" = '.' ]; then SCRIPT=$PWD/$SCRIPT; fi
+        cd $(dirname $SCRIPT)
+        if [ ! "${SCRIPT:0:1}" = '.' ]; then SCRIPT=$(basename $SCRIPT); fi
+        SCRIPT=${NEWSCRIPT:=$SCRIPT}
+        NEWSCRIPT=$(ls -l $SCRIPT | awk '{ print $NF }')
+    done
+    if [ ! "${SCRIPT:0:1}" = '/' ]; then SCRIPT=$PWD/$SCRIPT; fi
+    echo $(dirname $SCRIPT)
+}
+
+# Find the PHP binary
+for candidatephp in php php5; do
+	if [ `which $candidatephp` -a -f `which $candidatephp` ]; then
+		php=`which $candidatephp`
+		break
+	fi
+done
+if [ "$php" = "" ]; then
+	echo "Can't find any php binary"
+	exit 2
+fi
+
+DIR=$(resolve_symlink $0)
+EXEC_PATH="$DIR/silversmith.php"
+$php $EXEC_PATH ${*}
