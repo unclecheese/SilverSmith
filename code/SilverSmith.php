@@ -23,6 +23,8 @@ class SilverSmith {
 
     protected static $yaml_path = null;
 
+    
+    protected static $git_path = null;
 
 
 	protected static function get_subclasses($parentClassName) {
@@ -36,13 +38,21 @@ class SilverSmith {
 	
 
 
+    protected static function git($command) {
+        return exec(self::$git_path . " $command");
+    }
+
 
 
 	public static function is_upgrade_available() {
+        if(!self::$git_path) {
+            say("Git is not availble. Cannot upgrade.");
+            return false;
+        }
         $old_dir = getcwd();
         chdir(self::$script_dir);
-        exec("git fetch");
-        $response = exec("/usr/local/bin/git diff master origin/master");
+        self::git("fetch");
+        $response = self::git("diff master origin/master");
         chdir($old_dir);
         if(!empty($response)) {
             return true;
@@ -765,8 +775,8 @@ class SilverSmith {
             if (strtolower($response) == "y") {
                 $old_dir = getcwd();
                 chdir(self::$script_dir);
-                exec("/usr/local/bin/git reset --hard");
-                exec("/usr/local/bin/git pull");
+                self::git("reset --hard");
+                self::git("pull");
                 $fh = fopen(self::$script_dir."/upgrade","w");
                 fwrite($fh, time());
                 fclose($fh);
