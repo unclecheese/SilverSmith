@@ -51,8 +51,13 @@ class SilverSmith {
         }
         $old_dir = getcwd();
         chdir(self::$script_dir);
+        ob_start();
         self::git("fetch");
-        $response = self::git("diff master origin/master");
+        ob_end_clean();
+        ob_start();
+        self::git("diff master origin/master");
+        $response = ob_get_contents();
+        ob_end_clean();
         chdir($old_dir);
         if(!empty($response)) {
             return true;
