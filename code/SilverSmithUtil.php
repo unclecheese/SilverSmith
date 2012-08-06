@@ -229,16 +229,21 @@ class SilverSmithUtil
         );
     }
     
-    public static function add_default_content(&$object, $level)
-    {
+    public static function add_default_content(&$object, $level, $onlyFields = array ())
+    {    
         if ($level < 2)
             return;
-        
+        $fields = array ();
+        if(!empty($onlyFields)) {
+            foreach($onlyFields as $f) {
+                $fields[] = trim($f);
+            }
+        }
         $site_tree   = singleton('SiteTree');
         $data_object = singleton('DataObject');
         $is_sitetree = ($object->class == "SiteTree" || is_subclass_of($object, "SiteTree"));
         foreach ($object->db() as $field => $type) {
-            if ($data_object->db($field) || ($is_sitetree && $site_tree->db($field))) {
+            if ($data_object->db($field) || ($is_sitetree && $site_tree->db($field)) || (!empty($fields) && !in_array($field, $fields))) {
                 continue;
             }
             if (!$object->$field) {
@@ -255,7 +260,7 @@ class SilverSmithUtil
         }
         
         foreach ($object->has_one() as $relation => $class) {
-            if ($data_object->has_one($relation) || $site_tree->has_one($relation)) {
+            if ($data_object->has_one($relation) || $site_tree->has_one($relation)|| (!empty($fields) && !in_array($relation, $fields))) {
                 continue;
             }
             $filter = ($class == "File") ? "ClassName = 'File'" : null;
@@ -268,7 +273,7 @@ class SilverSmithUtil
         }
         if ($level > 2) {
             foreach ($object->has_many() as $relation => $class) {
-                if ($data_object->has_many($relation) || $site_tree->has_many($relation) || !SilverSmithProject::get_node($class)) {
+                if ($data_object->has_many($relation) || $site_tree->has_many($relation) || !SilverSmithProject::get_node($class)|| (!empty($fields) && !in_array($relation, $fields))) {
                     continue;
                 }
                 
@@ -291,15 +296,16 @@ class SilverSmithUtil
                     }
                 }
             }            
-            foreach ((array) $object->stat('many_many') as $relation => $class) {                
-                if ($data_object->many_many($relation) || $site_tree->many_many($relation) || !SilverSmithProject::get_node($class)) {                    
+            foreach ((array) $object->stat('many_many') as $relation => $class) {
+                if($class == $object->class || is_subclass_of($class, $object->class)) {continue;}
+                if ($data_object->many_many($relation) || $site_tree->many_many($relation) || !SilverSmithProject::get_node($class) || (!empty($fields) && !in_array($relation, $fields))) {
                     continue;
                 }
                 
                 $table     = $object->class . "_" . $relation;
                 $parentKey = $object->class . "ID";
                 $childKey  = $class . "ID";
-                $set       = DataList::create($class)->sort("RAND()")->limit(5);
+                $set       = DataList::create($class)->sort("RAND()")->limit(5);                
                 if (!$set) {
                     $set = new DataList();
                 }
@@ -307,7 +313,7 @@ class SilverSmithUtil
                 // never create sitetree or file objects.
                 if (!is_subclass_of($class, "SiteTree") && !is_subclass_of($class, "File") && $class != $object->class) {                    
                     $count = $set->Count();
-                    while ($count < 6) {
+                    while ($count < 5) {
                         $related = new $class();
                         $related->write();
                         self::add_default_content($related, $level);
@@ -393,32 +399,35 @@ class SilverSmithUtil
     }
 
 
-
+    // http://www.php.net/manual/en/function.getopt.php#83414
     public static function parse_parameters($noopt = array()) {
         $result = array();
-        $params = $GLOBALS['argv'];        
+        $params = $GLOBALS['argv'];
+        // could use getopt() here (since PHP 5.3.0), but it doesn't work relyingly
         reset($params);
         while (list($tmp, $p) = each($params)) {
             if ($p{0} == '-') {
                 $pname = substr($p, 1);
                 $value = true;
                 if ($pname{0} == '-') {
+                    // long-opt (--<param>)
                     $pname = substr($pname, 1);
                     if (strpos($p, '=') !== false) {
+                        // value specified inline (--<param>=<value>)
                         list($pname, $value) = explode('=', substr($p, 2), 2);
                     }
                 }
-                $nextparm = current($params = array ());
-                if (!in_array($pname, $noopt) && $value === true && $nextparm !== false && $nextparm{0} != '-')
-                    list($tmp, $value) = each($params);
+                // check if next parameter is a descriptor or a value
+                $nextparm = current($params);
+                if (!in_array($pname, $noopt) && $value === true && $nextparm !== false && $nextparm{0} != '-') list($tmp, $value) = each($params);
                 $result[$pname] = $value;
             } else {
+                // param doesn't belong to any option
                 $result[] = $p;
             }
-        }        
+        }
         return $result;
     }
-
     
     
     
