@@ -198,7 +198,6 @@ class SilverSmith {
             return self::$$suffix;
         }
 
-		$m = str_replace("-","_", $method);
 		return call_user_func("SilverSmith::{$m}");
 	}
 
@@ -450,9 +449,84 @@ class SilverSmith {
     }
     
     
+
+    public static function populate($params = array ()) {        
+        if (!isset($params[2])) {
+            fail("Usage: silversmith populate <class name>");
+        }
+        $className = $params[2];
+        if (!class_exists($className)) {
+            fail("Class $className does not exist!");
+        }
+        $parentField  = (!isset($params['parent-field'])) ? "ParentID" : $params['parent-field'];
+        $parent       = (!isset($params['parent'])) ? false : $params['parent'];
+        $seedingLevel = (!isset($params['seeding-level'])) ? 3 : $params['seeding-level'];
+        $verbose      = isset($params['verbose']);
+        $site_tree    = is_subclass_of($className, "SiteTree");
+        $fields       = (!isset($params['fields'])) ? array() : explode(',',$params['fields']);
+
+
+        if ($parent) {
+            if (is_numeric($parent)) {
+                $parentObj = DataList::create("SiteTree")->byId((int) $parent)->first();
+                if (!$parentObj) {
+                    fail("Page #{$parent} could not be found.");
+                }
+            } else {
+                $parentObj = SiteTree::get_by_link($parent);
+                if (!$parentObj) {
+                    $parentObj = DataList::create("SiteTree")->where("Title = '" . trim($parent) . "'")->first();
+                }
+                if (!$parentObj) {
+                    fail("Page '$parent' could not be found.");
+                }
+            }
+        }
+        $sample = Folder::find_or_make("silversmith-samples");
+        if (!$sample->hasChildren()) {
+            $answer = ask("This project does not have sample assets installed, which can be useful for content seeding. Do you want to install them now? (y/n)");
+            if (strtolower(trim($answer)) == "y") {
+                SilverSmith::add_sample_assets();
+            }
+        }
+        $objects = DataList::create($className);
+        if($parent) {
+            $objects->filter(array($parentField, $parentObj->ID));
+        }
+        foreach($objects as $o) {
+            state("Populating $o->ClassName: \"{$o->getTitle()}\"...");
+            SilverSmithUtil::add_default_content($o, $seedingLevel, $fields);
+            $o->write();
+            if($site_tree) {
+                $o->publish("Stage","Live");
+            }
+            state("Done.\n");
+            if($verbose) {
+                say("Debug output:");
+                $fields = array_keys(DataObject::custom_database_fields($className));
+                foreach(array_merge($p->has_many(), $p->many_many()) as $relation => $class) {
+                    $fields[] = $relation;
+                    if($p->$relation()->exists()) {
+                        $p->$relation = implode(',',$p->$relation()->column('ID'));
+                    }
+                    else {
+                        $p->$relation = "(none)";
+                    }                    
+                }
+                if($site_tree) {
+                    $fields = array_merge(array('Title'), $fields);
+                }                
+                foreach ($fields as $field) {
+                    say("{$field}: {$p->$field}");
+                }
+
+            }
+        }
+ 
+    }
     
     public static function seed_content($params = array ()) {
-        global $database;
+        var_dump($params);
         if (!isset($params[2])) {
             fail("Usage: silversmith seed-content <class name>");
         }
@@ -489,7 +563,7 @@ class SilverSmith {
         if (!$sample->hasChildren()) {
             $answer = ask("This project does not have sample assets installed, which can be useful for content seeding. Do you want to install them now? (y/n)");
             if (strtolower(trim($answer)) == "y") {
-                exec("silversmith add-sample-assets");
+                SilverSmith::add_sample_assets();
             }
         }
         for ($i = 0; $i < $count; $i++) {
@@ -562,7 +636,7 @@ class SilverSmith {
         if (!$sample->hasChildren()) {
             $answer = ask("This project does not have sample assets installed, which can be useful for content seeding. Do you want to install them now? (y/n)");
             if (strtolower(trim($answer)) == "y") {
-                exec("silversmith add-sample-assets");
+                SilverSmith::add_sample_assets();
             }
         }
         
@@ -733,7 +807,7 @@ class SilverSmith {
         }
         
         if (!$no_assets) {
-            exec("silversmith add-sample-assets");
+            SilverSmith::add_sample_assets();
         }
     }
     

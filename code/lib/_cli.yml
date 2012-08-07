@@ -2,8 +2,8 @@ AllowedActions:
   build-code:
     ProjectRequired: true
     Description: 
-      - Parses the project YAML file, generates PHP code
-      - for all page types and components, and build 
+      - "Parses the project YAML file, generates PHP code"
+      - "for all page types and components, and build"
       - the database.
       - ""
       - Examples
@@ -73,7 +73,7 @@ AllowedActions:
     Description: 
       - Rebuilds the site tree in the CMS with 
       - an architecture specified in a text file. 
-      - Seeds content, and creates new page types 
+      - "Seeds content, and creates new page types "
       - where necessary.
       - ""
       - Examples
@@ -92,13 +92,13 @@ AllowedActions:
           - 0 = none
           - 1 = Seed Content field only
           - 2 = Seed all page fields
-          - 3 = Seed all page fields, create components
+          - "3 = Seed all page fields, create components"
   
   seed-content:
     ProjectRequired: true
     Description:
       - Creates new instances of the given DataObject
-      - or SiteTree class provided, and seeds content.
+      - "or SiteTree class provided, and seeds content."
       - ""
       - Examples
       - silversmith seed-content NewsPage
@@ -119,24 +119,64 @@ AllowedActions:
       parent:
         arg: "-parent"
         description:
-          - An ID, URLSegment, or Title of the parent
+          - "An ID, URLSegment, or Title of the parent"
           - page for this new content.
       parent-field:
         arg: "-parent-field"
         description:
           - The field name that stores the parent ID.
-          - (Defaults to ParentID, for SiteTree instances)
+          - "(Defaults to ParentID, for SiteTree instances)"
       verbose:
         arg: "--verbose"
         description:
           - Turns on verbose mode. Shows all fields
           - and their values for each object created
 
+  populate:
+    ProjectRequired: true
+    Description:
+      - Updates existing objects in the database
+      - with example content
+      - ""
+      - Examples
+      - silversmith populate NewsPage
+      - silversmith populate NewsPage -parent 12 -seeding-level 2      
+      - silversmith populate TeamMember -parent our-team -parent-field TeamPageID
+      - "silversmith populate TeamMember -fields Title,Description,Image"
+    Options:
+      fields:
+        arg: "-fields"
+        description:
+          - A comma-separated list of fields or components
+          - to seed.
+      seeding-level:
+        arg: "-seeding-level"
+        description:
+          - The level of depth to use for content seeding
+          - (See "build-fixtures")
+      parent:
+        arg: "-parent"
+        description:
+          - "An ID, URLSegment, or Title of the parent"
+          - page for this new content.
+      parent-field:
+        arg: "-parent-field"
+        description:
+          - The field name that stores the parent ID.
+          - "(Defaults to ParentID, for SiteTree instances)"
+      verbose:
+        arg: "--verbose"
+        description:
+          - Turns on verbose mode. Shows all fields
+          - and their values for each object created
+
+
+
   add-sample-assets:
     ProjectRequired: true
     Options: {}
     Description:
-      - Adds sample assets to the Files & Images
+      - "Adds sample assets to the Files & Images"
       - section. Used for content seeding to
       - auto-populate any upload fields.
 

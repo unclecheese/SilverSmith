@@ -30,6 +30,7 @@ SilverSmithSpec::load(SilverSmith::get_script_dir() . "/code/lib/_spec.yml");
 $commands = new BedrockYAML(SilverSmith::get_script_dir() . "/code/lib/_cli.yml");
 $allowed_actions = $commands->getAllowedActions();
 $PARAMS = SilverSmithUtil::parse_parameters();
+
 if (!isset($PARAMS[1])) {
     fail("Usage: silversmith <command> [-args]. Type 'silversmith help' for more information.");
 }
@@ -117,10 +118,10 @@ if ($allowed_actions->get($action)->getProjectRequired()) {
 //     sleep(2);
 // }
 
-
 // Hand off execution to the SilverSmith static class
 say("Executing CLI command\n\n");
 line();
+$action = str_replace("-","_", $action);
 call_user_func("SilverSmith::{$action}",$PARAMS);       
 
 
