@@ -38,7 +38,7 @@ class SilverSmith {
 	
 
 
-    protected static function git($command) {
+    protected static function git($command) {     
         return exec(self::$git_path . " $command");
     }
 

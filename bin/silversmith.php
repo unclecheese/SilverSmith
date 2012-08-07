@@ -21,7 +21,7 @@ require_once("{$script_dir}/code/lib/thirdparty/TextDiff.php");
 // Bootstrap the SilverSmith class
 SilverSmith::set_cli(true);
 SilverSmith::set_script_dir($script_dir);
-SilverSmith::set_git_path(shell_exec("which git"));
+SilverSmith::set_git_path(trim(shell_exec("which git")));
 SilverSmithDefaults::load(SilverSmith::get_script_dir() . "/code/lib/_defaults.yml");
 SilverSmithSpec::load(SilverSmith::get_script_dir() . "/code/lib/_spec.yml");
 
