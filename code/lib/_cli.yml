@@ -236,11 +236,12 @@ AllowedActions:
       - project definition
     Options: {}
 
-  version:
-    Description: 
-      - Get the version ID for this build of SilverSmith
-    Options: {}    
-  
+  fix-mamp:
+    Description:
+      - Fixes a common bug when using MAMP with
+      - SilverSmith CLI. Symlinks /var/mysql/mysql.sock
+      - to the mysql.sock in the MAMP directory.
+    Options: {}  
   help:
     Description: 
       - Displays this help screen

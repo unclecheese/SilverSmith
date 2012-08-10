@@ -334,7 +334,9 @@ class SilverSmith {
             foreach($settings['fields'] as $field) {
                 say("+ $field");
             }
+            state("\n");
         }
+        line();
         state("Done");
         
 
@@ -997,6 +999,12 @@ class SilverSmith {
     }
     
     
+    public static function fix_mamp($params = array ()) {        
+        exec("sudo ln -s /Applications/MAMP//tmp/mysql/mysql.sock /var/mysql/mysql.sock");
+        say("Fixed!");
+    }
+
+
 
     public static function help($params = array ()) {
         $cli = new BedrockYAML(self::$script_dir."/code/lib/_cli.yml");

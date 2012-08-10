@@ -82,9 +82,19 @@ if ($allowed_actions->get($action)->getProjectRequired()) {
     say("done.");
 
     state("Connecting to database...");
+    if($databaseConfig['type'] == "MySQLDatabase") {        
+        $conn = @new MySQLi($databaseConfig['server'], $databaseConfig['username'], $databaseConfig['password']);        
+        if($conn->connect_error) {
+            $err = $conn->connect_error;
+            say("\nCould not connect to MySQL Database.","on_red","white");
+            say("This is often due to an issue with MAMP.");
+            say("You can run 'silversmith fix-mamp' resolve this issue.");
+            $answer = ask("Press any key to show the error output...");
+            say("Connection error: {$conn->connect_error}");
+        }        
+    }
     DB::connect($databaseConfig);
     say("done");
-    
     $project_dir = isset($PARAMS['module']) ? $PARAMS['module'] : project();
     SilverSmith::set_project_dir($project_dir);
     if ($action != "init") {
