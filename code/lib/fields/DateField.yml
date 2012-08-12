@@ -10,4 +10,5 @@ Update: |
   {T}{T}<@= Var @>->setConfig('showcalendar',true);
   <@ /if @>
 AutoFill: |
-  <div><strong><@= Label @></strong>: $<@= Name @>.Nice</div>
+  <% if <@= Name @> %><div><strong><@= Label @></strong>: $<@= Name @>.Nice</div><% end_if %>
+  

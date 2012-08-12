@@ -4,4 +4,5 @@ Aliases: [Time]
 Instantiate: |
   TimeField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
 AutoFill: |
-  <div><strong><@= Label @></strong>: $<@= Name @>.Nice</div>
+  <% if <@= Name @> %><div><strong><@= Label @></strong>: $<@= Name @>.Nice</div><% end_if %>
+  
