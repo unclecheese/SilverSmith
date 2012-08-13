@@ -41,6 +41,14 @@ PageType:
       DataType: string
       Description: A path to the image for the icon that will mark this page type in the CMS site tree
       Example: mysite/images/icons/mypage.png
+    SingularName:
+      DataType: string
+      Description: Page name. This works instead of YourClassName, this is useful for foreign countries where you need to have a meaningful name in its language instead of the ClassName
+      Example: Página de Currículums (for CVs Holder)
+    Description:
+      DataType: string
+      Description: Description that appears in the Page creation process inside the CMS
+      Example: A page for uploading and listing CVs
     AllowedInstances:
       DataType: integer
       Description: The number of instances of this page that can be present in the site tree at one time
