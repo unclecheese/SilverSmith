@@ -86,6 +86,20 @@ class SilverSmithProject
     
     public static function get_all_nodes()
     {
-        return array_merge(self::get_page_types(), self::get_components());
+        $merged = array_merge(self::get_page_types(), self::get_components());
+        $used = array ();
+        foreach($merged as $node) {
+            if(isset($used[$node->getKey()])) {
+                $existing = $used[$node->getKey()];
+                if($existing->getFields() && !$node->getFields()) {
+                    continue;
+                }
+                if($existing->getComponents() && !$node->getComponents()) {
+                    continue;
+                }                
+            }
+            $used[$node->getKey()] = $node;            
+        }
+        return array_values($used);
     }
 }
