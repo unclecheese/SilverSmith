@@ -527,8 +527,7 @@ class SilverSmith {
  
     }
     
-    public static function seed_content($params = array ()) {
-        var_dump($params);
+    public static function seed_content($params = array ()) {        
         if (!isset($params[2])) {
             fail("Usage: silversmith seed-content <class name>");
         }
@@ -547,7 +546,7 @@ class SilverSmith {
         }
         if ($parent) {
             if (is_numeric($parent)) {
-                $parentObj = DataList::create("SiteTree")->byId((int) $parent)->first();
+                $parentObj = DataList::create("SiteTree")->byId((int) $parent);
                 if (!$parentObj) {
                     fail("Page #{$parent} could not be found.");
                 }
@@ -999,8 +998,13 @@ class SilverSmith {
     }
     
     
-    public static function fix_mamp($params = array ()) {        
-        exec("sudo ln -s /Applications/MAMP//tmp/mysql/mysql.sock /var/mysql/mysql.sock");
+    public static function fix_mamp($params = array ()) { 
+        if(!is_dir("/var/mysql")) {
+            exec("sudo mkdir /var/mysql;ln -s /Applications/MAMP//tmp/mysql/mysql.sock /var/mysql/mysql.sock");
+        }
+        else {
+            exec("sudo ln -s /Applications/MAMP//tmp/mysql/mysql.sock /var/mysql/mysql.sock");
+        }
         say("Fixed!");
     }
 

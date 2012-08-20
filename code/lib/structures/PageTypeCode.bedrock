@@ -41,7 +41,7 @@
 <@ /if @>
 <@ else @>
 <@ if Decorator @>
-	public function updateCMSFields(FieldList $fields) {
+	public function updateGeneratedCMSFields(FieldList $fields) {
 <@ else @>
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
