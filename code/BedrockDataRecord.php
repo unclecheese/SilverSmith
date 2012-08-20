@@ -10,7 +10,7 @@ class BedrockDataRecord extends SilverSmithNode {
     static $controller_close = "/** -/- **/";
     
     
-    
+
     public function getDBVars()
     {
         if ($this->getFields()) {
@@ -274,3 +274,5 @@ class BedrockDataRecord extends SilverSmithNode {
     
     
 }
+
+// test
