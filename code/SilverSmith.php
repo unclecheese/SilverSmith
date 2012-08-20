@@ -227,7 +227,7 @@ class SilverSmith {
         $decorators         = array();
         line();
         say(cell("Status", 11, true, "grey", "on_white") . cell("File", 30, true, "grey", "on_white") . cell("Result", 50, true, "grey", "on_white"));
-        foreach (SilverSmithProject::get_all_nodes() as $node) {
+        foreach (SilverSmithProject::get_all_nodes() as $node) {            
             if (!$node->isNew() && !$node->isSilverSmithed()) {
                 say(cell("Omitted", 11, true, "white", "on_red") . cell("{$node->getKey()}.php", 30) . cell("Class has no code delimiters", 50));
                 continue;
@@ -528,7 +528,6 @@ class SilverSmith {
     }
     
     public static function seed_content($params = array ()) {
-        var_dump($params);
         if (!isset($params[2])) {
             fail("Usage: silversmith seed-content <class name>");
         }
@@ -547,7 +546,7 @@ class SilverSmith {
         }
         if ($parent) {
             if (is_numeric($parent)) {
-                $parentObj = DataList::create("SiteTree")->byId((int) $parent)->first();
+                $parentObj = DataList::create("SiteTree")->byId((int) $parent);
                 if (!$parentObj) {
                     fail("Page #{$parent} could not be found.");
                 }

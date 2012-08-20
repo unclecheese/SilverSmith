@@ -5,10 +5,9 @@ Instantiate: |
   <@ if Map @>
   DropdownField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'), array(
   	<@ each Map @>
-  		'<@= :Val @>' => '<@= :Val @>',
+  		{T}{T}{T}'<@= :Val @>' => '<@= :Val @>',
   	<@ /each @>
-  {T}))
-  <@ else @>
+  {T}{T}))<@ else @>
   DropdownField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>','<@= EscapedLabel @>'), array())
   <@ /if @>
 Update: |
