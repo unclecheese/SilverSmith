@@ -1,9 +1,21 @@
 <@= ModelVars @>
 <@ if Icon @>
 	static $icon = '<@= Icon @>';
-
-
 <@ /if @>
+
+<@ if Description @>
+	static $icon = '<@= Description @>';
+<@ /if @>
+
+<@ if SingularName @>
+	static $singular_name = '<@= SingularName @>';
+
+	function getSingularName() {
+		return _t('<@= Namespace @>.SINGULARNAME', $this->stat('<@= EscapedLabel @>'));
+	}
+<@ /if @>
+
+
 <@ if AllowedChildren @>
 	static $allowed_children = array (
 <@ each AllowedChildren @>
