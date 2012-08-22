@@ -22,7 +22,6 @@ class BedrockDataRecord extends SilverSmithNode {
 
             return new BedrockNode("Root",$db, "Root");                        
         }
-        echo "/* no db vars. " . get_class($this) . " */";
 
         return false;
     }
