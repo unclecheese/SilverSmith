@@ -1,32 +1,80 @@
 <?php
 
 
+
+/**
+ * This is the primary static class that dispatches all of the commands based on either
+ * CLI input or invocation from another script, i.e. a controller
+ *	
+ * @package SilverSmith
+ * @author Aaron Carlino <unclecheese@leftandmain.com>
+ */
 class SilverSmith {
 
+
+	/**
+	 * @var boolean Determines whether SilverSmith is in CLI mode. Future proofing for a backend GUI.
+	 */
     protected static $cli = false;
 
 
+
+    /**
+     * @var string Absolute path to the working directory, e.g. /Applications/MAMP/htdocs/mywebsite
+     */
 	protected static $project_dir = null;
 
 
+
+	/**
+	 * @var array A cached index of the field configuration YAML files in the lib/ dir
+	 */
 	protected static $field_manifest = array ();
 
 
+
+	/**
+	 * @var array A cached index of the nodes from the SilverSmith project configuration YAML
+	 */
 	protected static $node_manifest = array ();
 
 
+
+	/**
+	 * @var array A cached index of the interface configuration YAML files in the /lib/ dir
+	 */
 	protected static $interface_manifest = array ();
 
 
+
+	/**
+	 * @var string An absolute path to the script that is running SilverSmith, e.g. /usr/local/lib/silversmith/
+	 */
 	protected static $script_dir = null;
 
 
+
+	/**
+	 * @var string An absolute path to the SilverSmith project configuration file, e.g. _project.yml
+	 */
     protected static $yaml_path = null;
 
     
+    
+    /**
+     * @var string An absolute path to the Git binary
+     */
     protected static $git_path = null;
 
 
+
+    /**
+     * Gets all of the subclasses for a given parent
+     *
+     * @todo Is this functionality handled by ClassInfo?
+     * @param string The parent class name
+     * @return array
+     */
 	protected static function get_subclasses($parentClassName) {
 	    $classes = array();
 	    foreach (get_declared_classes() as $className) {
@@ -37,13 +85,28 @@ class SilverSmith {
 	}
 	
 
-
+	
+	
+	/**
+	 * Execute a Git command at the shell
+	 *
+	 * @todo This is for upgrading mostly. Composer will be a better solution for this
+	 * @param string The Git command to run, less the "git"
+	 * @return string
+	 */
     protected static function git($command) {     
         return exec(self::$git_path . " $command");
     }
 
 
 
+
+    /**
+     * Determines if an upgrade is available using Git commands
+     *
+     * @todo Migrate this to Composer
+     * @return boolean
+     */
 	public static function is_upgrade_available() {
         if(!self::$git_path) {
             say("Git is not availble. Cannot upgrade.");
@@ -66,6 +129,13 @@ class SilverSmith {
 	}
 
 
+
+	
+	/**
+	 * Loads all of the field configuration YAML files in the /lib/ directory
+	 *
+	 * @return void
+	 */
 	public static function load_field_manifest() {
     	foreach (glob(self::$script_dir . '/code/lib/fields/*.yml') as $file) {
 	        $yml = new BedrockYAML($file);
@@ -95,6 +165,15 @@ class SilverSmith {
     	}
 	}
 
+
+
+
+	/**
+	 * Loads all of the configurations for the classes defined in the project definition file
+	 * and stores them in a cached array
+	 *
+	 * @return void
+	 */
 	public static function load_class_manifest() {
 	    foreach (SilverSmithProject::get_all_nodes() as $config) {
 	        self::$node_manifest[$config->getKey()] = $config;
@@ -103,6 +182,12 @@ class SilverSmith {
 
 
 
+
+	/**
+	 * Lods all of the interface configurations from the /lib/ directory into a cached array
+	 *
+	 * @return void
+	 */
 	public static function load_interface_manifest()
 	{
 	    foreach (glob(self::$script_dir . '/code/lib/interfaces/*.yml') as $file) {
@@ -123,6 +208,15 @@ class SilverSmith {
 	    }
 	}
 
+	
+	
+	
+	/**
+	 * Switches to the project root, to make sure we're not somewhere in a subdirectory
+	 * e.g. /mysite/code
+	 *
+	 * @return boolean
+	 */
 	public static function switch_to_project_root() {
 	    while (dirname(getcwd()) != "/") {
 	        foreach (scandir(".") as $file) {
@@ -138,7 +232,14 @@ class SilverSmith {
 	    }
 	    return false;
 	}
-
+	
+	
+	
+	/**
+	 * Rebuild the class maniest e.g. ?flush=all programatically
+	 *
+	 * @todo Can't figure out how to do this in SS3
+	 */
 	public static function rebuild_manifest() {
 	    // exec("rm -" . TEMP_FOLDER);
 	    // exec("mkdir " . TEMP_FOLDER);
@@ -146,6 +247,12 @@ class SilverSmith {
 
 
 
+
+	/**
+	 * Rebuilds the database programmatically and keeps track of new tables and fields
+	 *
+	 * @return array
+	 */
 	public static function rebuild_database() {
         SS_ClassLoader::instance()->getManifest()->regenerate();
         ob_start();
@@ -188,6 +295,13 @@ class SilverSmith {
 
 
 
+
+	/**
+	 * A wildcard method for all static function calls. Allows automatic getters and setters
+	 *
+	 * @param string The method name
+	 * @param array The arguments
+	 */
 	public static function __callStatic($method, $args) { 
         $prefix = substr($method, 0, 4);
         $suffix = substr($method, 4);
@@ -203,6 +317,13 @@ class SilverSmith {
 
 
 
+
+	/**
+	 * Creates and updates the PHP code for all classes defined in the SilverSmith project configuration file
+	 *
+	 * @see "silversmith help"	 
+	 * @param The parameters, e.g. from the command line
+	 */
     public static function build_code($params = array ()) {
         state("Validating project definition...");
         $validator = new SilverSmithSpec_Validator(self::$yaml_path);
@@ -351,16 +472,13 @@ class SilverSmith {
         
         
         
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+	/**
+	 * Creates any templates that do not exist yet, unless the "force" parameter is specified
+	 *
+	 * @see "silversmith help"	 
+	 * @param The parameters, e.g. from the command line
+	 */    
     public static function build_templates($params = array ()) {
         $theme_dir = isset($params['theme']) ? "themes/" . $params['theme'] : false;
         $force     = isset($params['force']);
@@ -439,6 +557,12 @@ class SilverSmith {
     
     
 
+
+	/**
+	 * Adds the sample assets, PDFs and images into the assets directory. Used for content population
+	 *
+	 * @see "silversmith help"	 
+	 */    
     public static function add_sample_assets() {
         say("Adding sample assets");
         $sample_path = self::$script_dir . "/code/lib/sample-assets";
@@ -452,6 +576,13 @@ class SilverSmith {
     
     
 
+
+	/**
+	 * Populates content into existing pages and DataObjects
+	 *
+	 * @see "silversmith help"	 
+	 * @param The parameters, e.g. from the command line
+	 */    
     public static function populate($params = array ()) {        
         if (!isset($params[2])) {
             fail("Usage: silversmith populate <class name>");
@@ -528,6 +659,14 @@ class SilverSmith {
     }
     
 
+
+
+	/**
+	 * Creates pages into the SiteTree and populates them with content
+	 *
+	 * @see "silversmith help"	 
+	 * @param The parameters, e.g. from the command line
+	 */    
     public static function seed_content($params = array ()) {
         if (!isset($params[2])) {
             fail("Usage: silversmith seed-content <class name>");
@@ -619,8 +758,12 @@ class SilverSmith {
     
     
     
-    
-    
+	/**
+	 * Builds out the SiteTree hierarchy as specified in _fixtures.txt
+	 *
+	 * @see "silversmith help"	 
+	 * @param The parameters, e.g. from the command line
+	 */        
     public static function build_fixtures($params = array ()) {
         
         ClassInfo::reset_db_cache();
@@ -771,6 +914,14 @@ class SilverSmith {
     }
     
     
+    
+    
+	/**
+	 * Uninstalls the CLI tool from the filesystem
+	 *
+	 * @see "silversmith help"	 
+	 * @param The parameters, e.g. from the command line
+	 */        
     public static function cli_uninstall($params = array ()) {
         $response = (isset($params['force'])) ? "y" : ask("Are you sure you want to uninstall the SilverSmith CLI tools? (y/n)");
         if (strtolower($response) == "y") {
@@ -780,7 +931,15 @@ class SilverSmith {
     }
     
     
-    
+
+
+
+	/**
+	 * Initializes a new SilverSmith project
+	 *
+	 * @see "silversmith help"	 
+	 * @param The parameters, e.g. from the command line
+	 */        
     public static function init($params = array ()) {  
         $no_assets = isset($params['no-assets']);
         if (!file_exists(self::$project_dir . "/_project.yml")) {
@@ -815,6 +974,13 @@ class SilverSmith {
     
 
 
+
+	/**
+	 * Initializes a new module in the current project directory
+	 *
+	 * @see "silversmith help"	 
+	 * @param The parameters, e.g. from the command line
+	 */    
     public static function init_module($params = array ()) {
         if (!isset($params[2]) || empty($params[2])) {
             fail("Please specify a module name.");
@@ -849,7 +1015,17 @@ class SilverSmith {
         say("$d/_config.php");
     }
     
-    
+
+
+
+
+	/**
+	 * Upgrades this version of SilverSmith
+	 *
+	 * @todo Move this to Composer
+	 * @see "silversmith help"	 
+	 * @param The parameters, e.g. from the command line
+	 */        
     public static function upgrade($params = array ()) {
         if (self::is_upgrade_available()) {
             $response = ask("An upgrade is available. Install now? (y/n)");
@@ -872,6 +1048,13 @@ class SilverSmith {
     
     
     
+
+	/**
+	 * Displays the required spec for the SilverSmith project configuration file
+	 *
+	 * @see "silversmith help"	 
+	 * @param The parameters, e.g. from the command line
+	 */    
     public static function spec($params = array ()) {
         self::load_interface_manifest();
         
@@ -1048,17 +1231,10 @@ class SilverSmith {
 
 
 
-
-
-
-
-
-
-
-
 /**
  * Helper functions
  *-----------------------------------------------*/
+
 
 function say($text, $foreground = null, $background = null, $style = null) {
     SilverSmithPrompt::say($text, $background, $foreground, $style);
@@ -1105,6 +1281,16 @@ function error($msg) {
 }
 
 
+/**
+ * Creates a text-based table cell for output to the CLI
+ *
+ * @param string The text for the table cell
+ * @param integer The width, in characters of the table cell
+ * @param boolean Underline the table cell, e.g. a table heading
+ * @param string The foreground color
+ * @param string The background color 
+ * @return string
+ */
 function cell($text, $width = 30, $underline = true, $foreground = null, $background = null) {
     ob_start();
     if ($width < strlen($text)) {

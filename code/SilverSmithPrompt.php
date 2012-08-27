@@ -1,9 +1,27 @@
 <?php
 
-class SilverSmithPrompt
-{
-    public static function tc_colored($text, $foreground = null, $background = null, $style = null)
-    {
+
+
+/**
+ * A utility class for outputting to the CLI	
+ * @package SilverSmith
+ *
+ * @author Aaron Carlino <unclecheese@leftandmain.com>
+ */
+class SilverSmithPrompt {
+
+
+
+	/**
+	 * Adds the proper delimiters to a given string of text to color it in a CLI
+	 *
+	 * @param string The text to output
+	 * @param string The foreground color, e.g. "red"
+	 * @param string The background color, e.g. "gray"
+	 * @param string The style of the text, e.g. "bold"
+	 * @return string
+	 */
+    public static function tc_colored($text, $foreground = null, $background = null, $style = null) {
         static $fmt_str = "\033[%dm%s";
         static $reset = "\033[0m";
         $options = self::get_options();
@@ -27,14 +45,46 @@ class SilverSmithPrompt
         }
         return $text . $reset;
     }
-    public static function say($text, $foreground = null, $background = null, $style = null)
-    {
+    
+    
+    
+    /**
+     * Output text to the CLI followed by a line break
+     *
+	 * @param string The text to output
+	 * @param string The foreground color, e.g. "red"
+	 * @param string The background color, e.g. "gray"
+	 * @param string The style of the text, e.g. "bold"
+	 * @return string
+     */
+    public static function say($text, $foreground = null, $background = null, $style = null) {
         fwrite(STDOUT, self::tc_colored($text, $foreground, $background, $style) . "\n");
     }
-    public static function write($text, $foreground = null, $background = null, $style = null)
-    {
+    
+    
+    
+    
+    /**
+     * Output text to the CLI inline, with no line break
+     *
+	 * @param string The text to output
+	 * @param string The foreground color, e.g. "red"
+	 * @param string The background color, e.g. "gray"
+	 * @param string The style of the text, e.g. "bold"
+	 * @return string
+     */
+    public static function write($text, $foreground = null, $background = null, $style = null) {
         fwrite(STDOUT, self::tc_colored($text, $foreground, $background, $style));
     }
+    
+    
+    
+    
+	/**
+	 * Gets the available options for text foreground, background, and style
+	 *
+	 * @return array
+	 */    
     protected static function get_options()
     {
         $options = array_merge(array_combine(array(

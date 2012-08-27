@@ -1,23 +1,57 @@
 <?php
 
-class SilverSmithSpec
-{
+
+
+/**
+ * A wrapper class for accessing the specifications for the SilverSmith project configuration file.
+ * Used primarily for validating the project yaml.
+ *
+ * @package SilverSmith
+ * @author Aaron Carlino <unclecheese@leftandmain.com>
+ */
+class SilverSmithSpec {
+
+
+
+	/**
+	 * @var BedrockYAML A cached object representing the spec.yml 
+	 */
     protected static $settings_list;
     
-    public static function load($path)
-    {
+    
+    
+    /**
+     * Loads the YAML into a {@link BedrockYAML} object given a file path
+     *
+     * @param string the path to the YAML file
+     */
+    public static function load($path) {
         self::$settings_list = new BedrockYAML($path);
     }
     
     
-    public static function get($setting)
-    {
+    
+    /**
+     * Gets a given setting from the spec
+     *
+     * @param string The dot-separated path to the setting
+     * @return BedrockNode
+     */
+    public static function get($setting) {
         return self::$settings_list->get($setting);
     }
     
     
-    public static function get_i18n_map($path)
-    {
+    
+    
+    /**
+     * Gets a translatable list of a given setting
+     * Future-proofing for a GUI
+     *
+     * @param string The dot-separated path to the setting
+     * @return 
+     */
+    public static function get_i18n_map($path) {
         $map = array();
         if ($result = self::get($path)) {
             foreach ($result as $name => $setting) {
@@ -28,8 +62,14 @@ class SilverSmithSpec
     }
     
     
-    public function provideI18nEntities()
-    {
+    
+    
+    /**
+     * Future-proofing for a GUI. Provide translatable entities for the spec
+     *
+     * @return array
+     */
+    public function provideI18nEntities() {
         $entities   = array();
         $paths      = array(
             'Field.AvailableNodes.DBField',
@@ -52,26 +92,60 @@ class SilverSmithSpec
 }
 
 
-class SilverSmithSpec_Validator
-{
+
+
+/**
+ * A class that validates a given project configuration file based on the spec.yml	
+ *
+ * @package SivlerSmith
+ * @author Aaron Carlino <unclecheese@leftandmain.com>
+ */
+class SilverSmithSpec_Validator {
+
+
+
+	/**
+	 * @var array A list of errors in the YAML
+	 */
     protected $errors = array();
     
     
+    /**
+     * @var BedrockYAML The object representing the YAML input to be validated	
+     */
     protected $yml;
     
     
-    public function __construct($path)
-    {
+    
+    /**
+     * Create a new instances of the validator
+     *
+     * @param string The path to the YAML file to validate
+     */
+    public function __construct($path) {
         $this->yml = new BedrockYAML($path);
         $this->validate();
     }
     
     
-    public function getErrors()
-    {
+    
+    
+    /**
+     * Get all of the errors in the project YAML file
+     *
+     * @return array
+     */
+    public function getErrors() {
         return $this->errors;
     }
     
+    
+    
+    
+    /**
+     * Validate the YAML file based on the spec.yml
+     *
+     */
     public function validate()
     {
         if (!$this->yml)
@@ -86,8 +160,15 @@ class SilverSmithSpec_Validator
     }
     
     
-    protected function doValidation($setting, $parent_class = null)
-    {
+    
+    
+    /**
+     * A recursive function that validates the project YAML based on the spec.yml
+     *
+     * @param BedrockNode The node to validate
+     * @param string The name of the parent node	
+     */
+    protected function doValidation($setting, $parent_class = null) {
         foreach ($setting as $name => $result) {
             $value      = $setting->get($name);
             $is_setting = $value instanceof BedrockNode;
@@ -106,7 +187,6 @@ class SilverSmithSpec_Validator
             if (!$validator) {
                 continue;
             }
-            //echo "Using validator {$validator->getPath()} for $name<br />";
             // If the setting came back as an object
             if ($is_setting) {
                 // Check to make sure all nodes in the tree are allowed.
@@ -161,8 +241,16 @@ class SilverSmithSpec_Validator
     }
     
     
-    protected function validateDataType($value, $type, $name)
-    {
+    
+    
+    /**
+     * Validates a node to make sure it is the right data type
+     *
+     * @param mixed The value to validate
+     * @param string The type of data that the value is required to be
+     * @param string The name of the node being validated
+     */
+    protected function validateDataType($value, $type, $name) {
         if ($type == "string" && !is_string($value))
             $this->errors[] = sprintf(_t('Bedrock.VALUEMUSTBESTRING', 'The value of %s must be a string. Right now it is %s'), $name, $value);
         elseif ($type == "integer") {
@@ -179,8 +267,17 @@ class SilverSmithSpec_Validator
     }
     
     
-    protected function validatePossibleValues($value, $allowed, $n)
-    {
+    
+    
+    
+    /**
+     * Validates a node to make sure its value is within the list of allowed values
+     *
+     * @param mixed The value of the node
+     * @param array The list of allowed values
+     * @param string The name of the node
+     */
+    protected function validatePossibleValues($value, $allowed, $n) {
         $valid = false;
         foreach ($allowed as $a) {
             if (preg_match('/^' . $a . '$/', $value)) {

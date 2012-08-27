@@ -1,24 +1,38 @@
 <?php
 
 
-class SilverSmithUtil
-{
+
+/**
+ * A static catch-all class full of utility and factory methods used throughout the SilverSmith application	
+ * @todo A lot of these can be moved to more apporpriate places
+ *
+ * @package SilverSmith
+ * @author Aaron Carlino <unclecheese@leftandmain.com>
+ */
+class SilverSmithUtil {
+
+
+
     /**
      * If only a single tab name is given, make it easy and apply it to "Root.Content"
      *
      * @param string $tab The name of the tab
      * @return string
      */
-    public static function clean_tab($tab)
-    {
+    public static function clean_tab($tab) {
         if (false === stristr($tab, "Root."))
             $tab = "Root.Content.{$tab}";
         return $tab;
     }
     
     
-    public static function generate_i18n_namespace()
-    {
+    
+    /**
+     * Gets a namespace for all _t() translation functions
+     *
+     * @return string
+     */
+    public static function generate_i18n_namespace() {
         if ($namespace = SilverSmithDefaults::get('DefaultNamespace')) {
             return $namespace;
         }
@@ -26,8 +40,16 @@ class SilverSmithUtil
     }
     
     
-    public static function generate_i18n_entity($text)
-    {
+    
+    
+    /**
+     * Get an entity for a translated string.
+     * e.g. Given "What is your name" return "WHATISYOURNAME"
+     *
+     * @param string The text to translate
+     * @return string
+     */
+    public static function generate_i18n_entity($text) {
         $words     = explode(' ', $text);
         $max_words = SilverSmithDefaults::get('EntityWordCount');
         if (count($words) > $max_words) {
@@ -38,8 +60,17 @@ class SilverSmithUtil
     }
     
     
-    public static function generate_unique_i18n_entity($text, $namespace)
-    {
+    
+    
+    
+    /**
+     * Generates an i18n entity that is unique throughout the project
+     *
+     * @param string The text to translate
+     * @param string The namespace to use
+     * @return string
+     */
+    public static function generate_unique_i18n_entity($text, $namespace) {
         $original_entity = self::generate_i18n_entity($text);
         $entity          = $original_entity;
         $i               = 1;
@@ -52,16 +83,32 @@ class SilverSmithUtil
     
     
     
-    public static function pluralize($str)
-    {
+    
+    /**
+     * Pluralize a string
+     *
+     * Note: English biased
+     *
+     * @param string The word to pluralize
+     * @return string
+     */
+    public static function pluralize($str) {
         $name = $str;
         return substr($name, -1, 1) == "y" ? substr_replace($name, "ies", -1, 1) : $name . "s";
     }
     
     
     
-    public static function singularize($str)
-    {
+    
+    /**
+     * Singularize a string
+     *
+     * Note: English biased
+     *
+     * @param string The word to singularize
+     * @return string
+     */
+    public static function singularize($str) {
         $name = SilverSmithUtil::proper_form($str);
         if (substr($name, -1, 3) == "ies") {
             return substr_replace($name, "y", -1, 3);
@@ -72,29 +119,61 @@ class SilverSmithUtil
     }
     
     
-    public static function replace_tags($startPoint, $endPoint, $newText, $source)
-    {
+    
+    
+    /**
+     * Given a block of text and a pair of delimiters, replace the text between the delimiters
+     *
+     * @param string The start delimiter
+     * @param string The end delimiter
+     * @param string The new text to insert
+     * @param string The input text, including the delimiters and text to be replaced
+     * @return string
+     */
+    public static function replace_tags($startPoint, $endPoint, $newText, $source) {
         return preg_replace('#(' . preg_quote($startPoint) . ')(.*)(' . preg_quote($endPoint) . ')#si', '$1' . $newText . '$3', $source);
     }
     
     
     
     
-    public static function proper_form($str)
-    {
+    /**
+     * Sanitize a string to be a proper database field or template variable in SilverStripe
+     * "My-test string" becomes "MyTestString"
+     *
+     * @param string The text to sanitize
+     * @return string
+     */
+    public static function proper_form($str) {
         return preg_replace('/[^A-Za-z0-9_]/', "", $str);
     }
     
     
-    public static function tabify($str)
-    {
+    
+    
+    /**
+     * Replace the fake tabs in {@link BedrockTemplate} files with real ones.
+     * Real tabs choke YAML parsing
+     *
+     * @param string The input string to which to add tabs
+     * @return string
+     */
+    public static function tabify($str) {
         return str_replace("{T}", "\t", $str);
     }
     
     
     
-    public static function get_lipsum($length = 1, $rich = false)
-    {
+    
+    /**
+     * Get some lipsum text
+     *
+     * @todo Move this into local storage so it doesn't use HTTP requests
+     * @param integer The length of the lipsum text, in sentences
+     * @param boolean If true, include html links
+     * @return string
+     */
+    public static function get_lipsum($length = 1, $rich = false) {
         $tags = $rich ? "link" : "";
         $text = @file_get_contents("http://loripsum.net/api/{$length}/short/{$tags}");
         if (!$rich) {
@@ -103,15 +182,31 @@ class SilverSmithUtil
         return ($text && !empty($text)) ? $text : SilverSmithDefaults::get('DefaultContent');
     }
     
-    public static function get_lipsum_words($num = 5)
-    {
+    
+    
+    
+    /**
+     * Get a series of lipsum-based words
+     *
+     * @param integer The number of words to get
+     * @return string
+     */
+    public static function get_lipsum_words($num = 5) {
         $str   = self::get_lipsum();
         $words = explode(' ', $str);
         return implode(' ', array_slice($words, 8, $num));
     }
     
-    public static function get_default_content(DBField $fieldType)
-    {
+    
+    
+    
+    /**
+     * Gets the default content given a DBField object
+     *
+     * @param DBField The database field type that will receive the new content, e.g. Varchar
+     * @return mixed
+     */
+    public static function get_default_content(DBField $fieldType) {
         switch (get_class($fieldType)) {
             case "Boolean":
                 return rand(0, 1);
@@ -194,8 +289,17 @@ class SilverSmithUtil
     }
     
     
-    public static function get_text_diff($old_content, $new_content)
-    {
+    
+    
+    
+    /**
+     * Get the difference between original text and a changed body of text
+     *
+     * @param string The old text
+     * @param string The changed text
+     * @return array 
+     */
+    public static function get_text_diff($old_content, $new_content) {
         $old_file = explode("\n", $old_content);
         $new_file = explode("\n", $new_content);
         $diff     = new Text_Diff('auto', array(
@@ -229,8 +333,18 @@ class SilverSmithUtil
         );
     }
     
-    public static function add_default_content(&$object, $level, $onlyFields = array ())
-    {    
+    
+    
+    
+    /**
+     * Adds default content to a page or DataObject
+     *
+     * @todo Migrate this to a decorator. DataObjects should know how to seed themeselves.
+     * @param DataObject The object to modify
+     * @param integer The level to which to seed content (see "silversmith help")
+     * @param array Limit the seeding to certain fields
+     */
+    public static function add_default_content(&$object, $level, $onlyFields = array ()) {    
         if ($level < 2)
             return;
         $fields = array ();
@@ -333,8 +447,16 @@ class SilverSmithUtil
     
     
     
-    public static function i18n_entry_exists($namespace, $entity)
-    {
+    
+    
+    /**
+     * Determine if an i18n entry is already present in the project
+     *
+     * @param string The namespace of the translation
+     * @param string The entity of the translation
+     * @return boolean
+     */
+    public static function i18n_entry_exists($namespace, $entity) {
         global $lang;
         $loc = i18n::get_locale();
         if (!isset($lang[$loc]))
@@ -348,8 +470,15 @@ class SilverSmithUtil
     }
     
     
-    public static function remove_file_extension($strName)
-    {
+    
+    
+    /**
+     * Removes the file extension from a given filename
+     *
+     * @param string The filename
+     * @return string
+     */
+    public static function remove_file_extension($strName) {
         $ext = strrchr($strName, '.');
         if ($ext !== false) {
             $strName = substr($strName, 0, -strlen($ext));
@@ -358,20 +487,43 @@ class SilverSmithUtil
     }
     
     
-    public static function clean_array_value($key, $array)
-    {
+    
+    
+    /**
+     * Get a value from an array given a key, and fail gracefully if the key does not exist
+     *
+     * @param string The key to access in the array
+     * @param array The source array
+     * @return mixed
+     */
+    public static function clean_array_value($key, $array) {
         return isset($array[$key]) ? $array[$key] : "";
     }
     
     
-    public static function array_to_yml($array)
-    {
+    
+    
+    /**
+     * Convert an array to a YAML list
+     *
+     * @param array The input array
+     * @return string
+     */
+    public static function array_to_yml($array) {
         return sfYML::dump($array, 99);
     }
     
     
-    public static function remove_empty_values($input)
-    {
+    
+    
+    
+    /**
+     * Remove any empty items from the array. This helps in generating clean YAML
+     *
+     * @param array The input array
+     * @return array
+     */
+    public static function remove_empty_values($input) {
         // If it is an element, then just return it
         if (!is_array($input)) {
             return $input;
@@ -391,15 +543,35 @@ class SilverSmithUtil
         
     }
     
-    public static function to_underscore($str)
-    {
+
+
+    /**
+     * Convert UpperCamelCase to underscore_case
+     *
+     * @param string The input string
+     * @return string
+     */
+    public static function to_underscore($str) {
         $str[0] = strtolower($str[0]);
         $func   = create_function('$c', 'return "_" . strtolower($c[1]);');
         return preg_replace_callback('/([A-Z])/', $func, $str);
     }
 
 
-    // http://www.php.net/manual/en/function.getopt.php#83414
+
+    
+    /**
+     * Parse a list of input parameters from the CLI. 
+     * Examples:
+     * "--someflag" evaluates to "someflag" => true
+     * "-someoption foo" evaluates to "someoption" => "foo"
+     * "foo bar" evalueates to 0 => "foo", 1 => "bar"
+     *
+     * Source: http://www.php.net/manual/en/function.getopt.php#83414
+     *
+     * @param array The input array of values
+     * @return array
+     */
     public static function parse_parameters($noopt = array()) {
         $result = array();
         $params = $GLOBALS['argv'];

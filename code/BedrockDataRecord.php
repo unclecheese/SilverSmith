@@ -1,17 +1,59 @@
 <?php
 
+/**
+ * Defines a DataObject or SiteTree object that is described in the SilverSmith
+ * project definition file
+ *
+ * Bedrock is a PHP library built by Aaron Carlino that turns YAML in to traversable objects.
+ * It is sensitive to other classes that contain the prefix "Bedrock"
+ * https://github.com/unclecheese/bedrock
+ * 
+ *	
+ * @package SilverSmith
+ * @author Aaron Carlino <unclecheese@leftandmain.com>
+ */
 class BedrockDataRecord extends SilverSmithNode {
+
+
+	/**
+	 * @var string The delimiter that marks the beginning of SilverSmith-generated code
+	 *				in the model portion of a SilverStripe PHP file
+	 */
     static $model_open = "/** //--// **/";
     
+
+
+	/**
+	 * @var string The delimiter that marks the end of SilverSmith-generated code
+	 *				in the model portion of a SilverStripe PHP file
+	 */
     static $model_close = "/** --//-- **/";
     
+    
+    
+	/**
+	 * @var string The delimiter that marks the beginning of SilverSmith-generated code
+	 *				in the controller portion of a SilverStripe PHP file
+	 */    
     static $controller_open = "/** /-/ **/";
     
+
+
+	/**
+	 * @var string The delimiter that marks the end of SilverSmith-generated code
+	 *				in the controller portion of a SilverStripe PHP file
+	 */    
     static $controller_close = "/** -/- **/";
     
     
-    public function getDBVars()
-    {
+    
+    
+    /**
+     * Gets an array of $db vars for the generated code, in $FieldName => $FieldType pairs
+     *
+     * @return BedrockNode
+     */
+    public function getDBVars() {
         if ($this->getFields()) {
             $db = array();
             foreach ($this->getFields() as $f) {
@@ -27,8 +69,13 @@ class BedrockDataRecord extends SilverSmithNode {
     }
     
     
-    public function getHasOneVars()
-    {
+    
+    /**
+     * Gets an array of $has_one vars for the generated code, in $RelationName => $ClassName pairs
+     *
+     * @return BedrockNode
+     */    
+    public function getHasOneVars() {
         $has_one = array();
         if ($this->getFields()) {
             foreach ($this->getFields() as $f) {
@@ -48,8 +95,17 @@ class BedrockDataRecord extends SilverSmithNode {
         return empty($has_one) ? false : new BedrockNode("Root",$has_one,"Root");
     }
     
-    public function relation($type)
-    {
+    
+    
+    
+    /**
+     * Gets the definition of a given relation for this object.
+     * e.g. $myPageTypeNode->relation('StaffMembers')
+     *
+     * @param string The name of the relation
+     * @return BedrockNode
+     */
+    public function relation($type) {
         if ($this->getComponents()) {
             $relations = array();
             foreach ($this->getComponents() as $c) {
@@ -59,22 +115,40 @@ class BedrockDataRecord extends SilverSmithNode {
             }
             return empty($relations) ? false : new BedrockNode("Root",$relations, "Root");
         }
+        
         return false;
     }
     
     
-    public function getHasManyVars()
-    {
+    
+    /**
+     * Gets an array of $has_many vars for the generated code, in $RelationName => $ClassName pairs
+     *
+     * @return BedrockNode
+     */        
+    public function getHasManyVars() {
         return $this->relation("many");
     }
     
-    public function getManyManyVars()
-    {
+    
+    
+    /**
+     * Gets an array of $many_many vars for the generated code, in $RelationName => $ClassName pairs
+     *
+     * @return BedrockNode
+     */        
+    public function getManyManyVars() {
         return $this->relation("manymany");
     }
     
-    public function getBelongsManyManyVars()
-    {
+    
+    
+    /**
+     * Gets an array of $belongs_many_many vars for the generated code, in $RelationName => $ClassName pairs
+     *
+     * @return BedrockNode
+     */        
+    public function getBelongsManyManyVars() {
         $belongs = array();
         foreach (SilverSmithProject::get_all_nodes() as $node) {
             if ($components = $node->getComponents()) {
@@ -90,42 +164,74 @@ class BedrockDataRecord extends SilverSmithNode {
     }
     
     
-    public function getDecorator()
-    {
+    
+    /**
+     * Determines if this class will be defined as a decorator, e.g. {@link DataExtension} subclass
+     *
+     * @return bool
+     */
+    public function getDecorator() {
         return class_exists($this->getKey()) && !file_exists(SilverSmith::get_project_dir()."/code/{$this->key}.php");
     }
     
     
     
-    public function getModelVars()
-    {        
+    
+    /**
+     * Binds this object to a {@link BedrockTemplate} which outputs all of the model vars
+     * e.g. $db, $has_one, $has_many, $many_many, $belongs_many_many	
+     *
+     * @return BedrockNode
+     */
+    public function getModelVars() {        
         $file = $this->getDecorator() ? "ModelVarsDecorator" : "ModelVars";
         $path = SilverSmith::get_script_dir() . "/code/lib/structures/{$file}.bedrock";
         if (file_exists($path)) {
             $template = new BedrockTemplate(file_get_contents($path));
             $template->bind($this);
+            
             return $template->render();
         }
         
     }
     
     
-    public function getIsPage()
-    {
+
+    /**
+     * Determines if this record is associated with a SiteTree object
+     *
+     * @return bool
+     */
+    public function getIsPage() {
         $parts = explode('.', $this->path);
+        
         return ($parts[sizeof($parts) - 2] == "PageTypes");
     }
     
     
-    public function getIsModelAdmin()
-    {
+    
+    
+    /**
+     * Determines if this is a "standalone" component that is not defined under
+     * a page or parent component. i.e. the type of component that is managed in
+     * ModelAdmin
+     *
+     * @return bool
+     */
+    public function getIsModelAdmin() {
         $parts = explode('.', $this->path);
+        
         return reset($parts) == "Components";
     }
     
     
-    public function getFilePath()
-    {
+    
+    /**
+     * Gets the path to the PHP file that contains the class for this object
+     *
+     * @return string
+     */
+    public function getFilePath() {
         if ($this->getDecorator()) {
             return SilverSmith::get_project_dir()."/code/{$this->key}Decorator.php";
         }
@@ -133,28 +239,54 @@ class BedrockDataRecord extends SilverSmithNode {
     }
     
     
-    public function isNew()
-    {
+    
+    /**
+     * Determines if the file for this object has been created yet
+     *
+     * @return bool
+     */
+    public function isNew() {
         return !file_exists($this->getFilePath());
     }
     
     
-    public function getContentType()
-    {
+    
+    
+    /**
+     * Returns the content type for this object, e.g. "PageType" or "Component"
+     *
+     * @return string
+     */
+    public function getContentType() {
         return str_replace("Bedrock", "", get_class($this));
     }
     
     
-    public function getGetCMSFieldsCode()
-    {
+    
+    
+    /**
+     * Gets the code to define the getCMSFields() function for this object
+     *
+     * @return string
+     */
+    public function getGetCMSFieldsCode() {
         $template = new BedrockTemplate(file_get_contents(SilverSmith::get_script_dir() . "/code/lib/structures/getCMSFields.bedrock"));
         $template->bind($this);
+        
         return $template->render();
     }
     
     
-    public function updateFile()
-    {
+    
+    
+    /**
+     * This is the function that does most of the legwork for creating the PHP code for 
+     * this node. Note teh replacement of [?php tags to allow the eval() function 
+     * in {@link BedrockTemplate} to work properly
+     *
+     * @return array A list of the differences in the file
+     */
+    public function updateFile() {
         $path             = $this->getFilePath();
         $content          = file_get_contents($path);
         $original_content = $content;
@@ -192,13 +324,18 @@ class BedrockDataRecord extends SilverSmithNode {
         $fh = fopen($path, "w");
         fwrite($fh, $new_content);
         fclose($fh);
+
         return SilverSmithUtil::get_text_diff($original_content, $new_content);
-        
     }
     
     
-    public function createFile()
-    {
+    
+    
+    /**
+     * Creates a PHP file on the disk for the class that will define this node
+     *
+     */
+    public function createFile() {
         $path     = $this->getFilePath();
         $stock    = $this->getDecorator() ? "Decorator" : $this->getContentType();
         $content  = file_get_contents(SilverSmith::get_script_dir() . "/code/lib/structures/$stock.bedrock");
@@ -211,16 +348,29 @@ class BedrockDataRecord extends SilverSmithNode {
     }
     
     
-    public function isSilverSmithed()
-    {
+    
+    
+    /**
+     * Determines if this node is still under the control of SilverSmith, e.g. 
+     * if the delimiters have been removed
+     *
+     * @return bool
+     */
+    public function isSilverSmithed() {
         if ($contents = @file_get_contents($this->getFilePath())) {
             return (stristr($contents, self::$model_open) !== false);
         }
     }
     
     
-    public function getHide()
-    {
+    
+    
+    /**
+     * Get the fields that are hidden in the getCMSFields() function
+     *
+     * @return array
+     */
+    public function getHide() {
         if ($hides = $this->get('Hide')) {
             if (is_string($hides)) {
                 return SilverSmithNode::create("Root",array(
@@ -229,12 +379,19 @@ class BedrockDataRecord extends SilverSmithNode {
             }
             return $hides;
         }
+        
         return false;
     }
     
     
-    public function getHasSilverSmithedChildren()
-    {
+    
+    
+    /**
+     * Gets the children the class and checks if they are under the management of SilverSmith
+     *
+     * @return bool
+     */
+    public function getHasSilverSmithedChildren() {
         foreach (SilverSmithProject::get('PageTypes') as $p) {
             if (($p->getParent() == $this->key) && $p->isSilverSmithed()) {
                 return true;
@@ -243,32 +400,57 @@ class BedrockDataRecord extends SilverSmithNode {
     }
     
     
-    public function getHasSilverSmithedParents()
-    {
+    
+    /**
+     * Determines if the class that this node represents has any parents that are managed by SilverSmith
+     *
+     * @return bool
+     */
+    public function getHasSilverSmithedParents() {
         if ($node = SilverSmithProject::get_node($this->getParent())) {
             return $node->isSilverSmithed();
         }
+        
         return false;
     }
     
     
-    public function getHasNoSilverSmithedParents()
-    {
+    
+    
+    /**
+     * A negation method to {@link getHasSilverSmithedParents()}
+     *
+     * @return bool
+     */
+    public function getHasNoSilverSmithedParents() {
         return !$this->getHasSilverSmithedParents();
     }
     
     
-    public function getHasNoSilverSmithedChildren()
-    {
+
+
+    /**
+     * A negation method to {@link getHasSilverSmithedChildren()}
+     *
+     * @return bool
+     */
+    public function getHasNoSilverSmithedChildren() {
         return !$this->getHasSilverSmithedChildren();
     }
     
     
-    public function getIsFinal()
-    {
+    
+    
+    /**
+     * Determines if the class that this node represents is at the bottom of the inheritance chain.
+     * This is important to prevent the getGeneratedCMSFields() function, which calls getCMSFields(),
+     * from getting stuck in an infinite loop.
+     *
+     * @return bool
+     */    
+    public function getIsFinal() {
         return !$this->getHasSilverSmithedChildren();
     }
-    
     
     
     

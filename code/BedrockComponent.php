@@ -1,17 +1,32 @@
 <?php
-
+/**
+ * Defines a child node of the Components node in a project defintion YAML file	
+ * @package SilverSmith
+ * @author Aaron Carlino <unclecheese@leftandmain.com>
+ */
 class BedrockComponent extends BedrockDataRecord {
 
     
-    public function getParent()
-    {
+	/**
+	 * Gets the parent class, e.g. "DataObject" of this component
+	 *
+	 * @return string
+	 */
+    public function getParent() {
         if ($this->getDecorator())
             return "DataExtension";
         return $this->get('Parent') ? $this->get('Parent') : "DataObject";
     }
     
-    public function getHolder()
-    {
+    
+    
+    /**
+     * Gets the "holder" class of this component. Used to figure out if the component
+     * is defined under a Page, for example	
+     *
+     * @return string|bool
+     */
+    public function getHolder() {
         if ($parent = $this->getParentNode()) {
             if ($parent->key == "Components") {
                 if ($grandparent = $parent->getParentNode()) {
@@ -22,11 +37,25 @@ class BedrockComponent extends BedrockDataRecord {
         return false;
     }
     
-    public function getClass()
-    {
+    
+    
+    /**
+     * Wrapper method to get the class name of the component
+     *
+     * @return string
+     */
+    public function getClass() {
         return $this->key;
     }
     
+    
+    
+    /**
+     * Gets the name of the component relationship, for example as defined in a $has_many
+     * relation on a Page
+     *
+     * @return string
+     */
     public function getName()
     {
         if (!$this->get('Name')) {
@@ -36,6 +65,12 @@ class BedrockComponent extends BedrockDataRecord {
     }
     
     
+    
+    /**
+     * Gets the array of the $has_one vars on this component
+     *
+     * @return BedrockNode
+     */
     public function getHasOneVars()
     {
         $v = parent::getHasOneVars();
@@ -54,6 +89,13 @@ class BedrockComponent extends BedrockDataRecord {
     }
     
     
+    
+    /**
+     * Binds the component to a {@link BedrockTemplate} and creates the PHP code that defines the
+     * component in SilverStripe
+     *
+     * @return string
+     */
     public function getGeneratedCode()
     {
         $path = SilverSmith::get_script_dir() . "/code/lib/structures/ComponentCode.bedrock";
@@ -65,6 +107,14 @@ class BedrockComponent extends BedrockDataRecord {
     }
     
     
+    
+    /**
+     * An accessor method that "instantiates" a component in a getCMSFields() function.
+     * Since components themselves aren't formfields, it just talks to the {@link BedrockInterface}
+     * of this component.
+     *
+     * @return string
+     */
     public function getInstantiation()
     {
         if ($yml = $this->getInterfaceConfig()) {
@@ -82,8 +132,14 @@ class BedrockComponent extends BedrockDataRecord {
         return false;
     }
     
-    public function getInterfaceConfig()
-    {
+    
+    
+    /**
+     * An accessor method to get the interface config without traversing the Interface node
+     *
+     * @return SilverSmithNode
+     */
+    public function getInterfaceConfig() {
         if ($i = $this->getInterface()) {
             return $i->getConfig();
         }
@@ -91,6 +147,15 @@ class BedrockComponent extends BedrockDataRecord {
     }
     
     
+    
+    
+    /**
+     * An accessor method to get the "update" code for the getCMSFields() function.
+     * Since components themselves are not form fields, this function just talks to the
+     * {@link BedrockInterface} defined on this node and gets its "update" code.
+     *
+     * @return string
+     */
     public function getUpdate()
     {
         if ($yml = $this->getInterfaceConfig()) {
@@ -103,15 +168,25 @@ class BedrockComponent extends BedrockDataRecord {
     }
     
     
-    public function getIsOnPage()
-    {
+    
+    /**
+     * Determines whether this component is defined as part of a SiteTree object
+     *
+     * @return bool
+     */
+    public function getIsOnPage() {
         $parts = explode('.', $this->path);
         return ($parts[sizeof($parts) - 4] == "PageTypes");
     }
     
     
-    public function getTab()
-    {
+    
+    /**
+     * Gets the name of the tab for this component as used in getCMSFields()
+     *
+     * @return string
+     */
+    public function getTab() {
     	if(!$this->get('Tab')) {
     		return "Root.{$this->getName()}";
     	}
@@ -122,14 +197,25 @@ class BedrockComponent extends BedrockDataRecord {
     }
     
     
-    public function getDefinition()
-    {
+    
+    /**
+     * Gets the entire node out of the SilverSmith project definition file
+     *
+     * @return BedrockNode
+     */
+    public function getDefinition() {
         return SilverSmithProject::get_node($this->key);
     }
     
     
-    public function getDefinedFields()
-    {
+    
+    /**
+     * Gets the fields that are defined for this component. If empty, all components
+     * get a Title field.
+     *
+     * @return BedrockNode
+     */
+    public function getDefinedFields() {
         if ($d = $this->getDefinition()) {
             $f = $d->getFields();
             if(!$f) {
