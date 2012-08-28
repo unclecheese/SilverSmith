@@ -82,12 +82,10 @@ class BedrockPageType extends BedrockDataRecord {
     public function getAllowedChildren()
     {
         if ($children = $this->get('AllowedChildren')) {
-            if (!is_array($children)) {
-                return array(
-                    $children
-                );
+            if ($children instanceof BedrockNode) {
+                return $children;
             }
-            return $children;
+            return new SilverSmithNode("Root", array($children), "Root.AllowedChildren", array());
         }
         return false;
         

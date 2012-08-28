@@ -767,7 +767,7 @@ class SilverSmith {
     public static function build_fixtures($params = array ()) {
         
         ClassInfo::reset_db_cache();
-        $fixtures_file = isset($params['file']) ? $params['file'] : "{self::$project_dir}/_fixtures.txt";
+        $fixtures_file = isset($params['file']) ? $params['file'] : self::$project_dir."/_fixtures.txt";
         if (!file_exists($fixtures_file)) {
             fail("The file $fixtures_file doesn't exist.");
         }
@@ -840,8 +840,8 @@ class SilverSmith {
         }
         if (!empty($new)) {
             state("Rebuilding database to support " . sizeof($new) . " new page types...");
-            $result = rebuildDatabase();
-            rebuildManifest();
+            $result = self::rebuild_database();
+            self::rebuild_manifest();
             state("Done\n");
         }
         
@@ -904,7 +904,7 @@ class SilverSmith {
             }
             ("Done\n");
         }
-        rebuildManifest();
+        self::rebuild_manifest();
         say(success("Success!"));
         state("Important", "red");
         state(": You must ");
