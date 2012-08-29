@@ -108,7 +108,11 @@ class SilverSmithProject
                 if ($subcomponents = $component->getComponents()) {
                     foreach ($subcomponents as $sub) {
                         if ($sub->getFields() || $sub->getDecorator()) {
-                            $ret[$sub->getKey()] = $sub;
+                            if(isset($ret[$sub->getKey()])) {
+                                if(!$ret[$sub->getKey()]->getFields()) {
+                                    $ret[$sub->getKey()] = $sub;        
+                                }
+                            }                            
                         }
                     }
                 }
@@ -147,7 +151,7 @@ class SilverSmithProject
         $merged = array_merge(self::get_page_types(), self::get_components());
         $used = array ();
         foreach($merged as $node) {
-            if(isset($used[$node->getKey()])) {
+            if(isset($used[$node->getKey()])) {                
                 $existing = $used[$node->getKey()];
                 if($existing->getFields() && !$node->getFields()) {
                     continue;
