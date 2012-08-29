@@ -3,7 +3,7 @@
 if [ -d "/usr/local/lib/silversmith" ];then
 	echo "SilverSmith CLI is already installed. Do you want to create a new installation? (y/n)"
 	read ANSWER
-	if [ "$ANSWER" == "y" ] || [ "$ANSWER" == "Y" ];then
+	if [ "$ANSWER" = "y" ] || [ "$ANSWER" = "Y" ];then
 		sudo rm -rf /usr/local/lib/silversmith
 		sudo rm /usr/local/bin/silversmith
 	else
@@ -19,7 +19,7 @@ if [ ! -d "$INSTALL_PATH" ];then
 	sudo mkdir "$INSTALL_PATH"
 fi
 cd ~
-if [ "$1" == "--admin" ];then
+if [ "$1" = "--admin" ];then
 	git clone git@github.com:unclecheese/SilverSmith.git silversmith
 else 	
 	git clone git://github.com/unclecheese/SilverSmith.git silversmith
