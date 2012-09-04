@@ -107,12 +107,15 @@ class SilverSmithProject
                 }
                 if ($subcomponents = $component->getComponents()) {
                     foreach ($subcomponents as $sub) {
-                        if ($sub->getFields() || $sub->getDecorator()) {
+                        if ($sub->getFields() || $sub->getDecorator()) {                            
                             if(isset($ret[$sub->getKey()])) {
                                 if(!$ret[$sub->getKey()]->getFields()) {
                                     $ret[$sub->getKey()] = $sub;        
                                 }
-                            }                            
+                            }
+                            else {
+                                $ret[$sub->getKey()] = $sub;                                        
+                            }                        
                         }
                     }
                 }
