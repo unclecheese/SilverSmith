@@ -510,7 +510,7 @@ class SilverSmithUtil {
      * @return string
      */
     public static function array_to_yml($array) {
-        return sfYML::dump($array, 99);
+        return sfYAML::dump($array, 99);
     }
     
     
