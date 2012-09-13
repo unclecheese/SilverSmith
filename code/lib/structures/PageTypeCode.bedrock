@@ -4,7 +4,7 @@
 <@ /if @>
 
 <@ if Description @>
-	static $icon = '<@= Description @>';
+	static $Description = '<@= Description @>';
 <@ /if @>
 
 <@ if SingularName @>
