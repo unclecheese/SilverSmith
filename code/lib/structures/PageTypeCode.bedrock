@@ -4,7 +4,7 @@
 <@ /if @>
 
 <@ if Description @>
-	static $Description = '<@= Description @>';
+	static $description = '<@= Description @>';
 <@ /if @>
 
 <@ if SingularName @>
