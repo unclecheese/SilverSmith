@@ -317,6 +317,56 @@ class SilverSmith {
 
 
 
+    public static function sync($params = array ()) {        
+        Object::add_extension("FieldList","SilverSmithFieldList");
+        $f = new SS_FileFinder();
+        $f->setOption('name_regex', '/[A-Za-z0-9_]+\.php/');
+        $result = $f->find(self::$project_dir."/code");        
+        if(!$result) fail("There are no PHP files in your code directory.");
+        $yaml = array (
+            'PageTypes' => array(),
+            'Components' => array()
+        );
+        foreach($result as $r) {            
+            $class = basename($r,".php");
+            if(!is_subclass_of($class, "DataObject")) { continue; }
+            $node = array ();
+            $SNG = Injector::inst()->get($class);            
+            if($CMSFields = $SNG->getCMSFields()) {
+                $name_list = array ();
+                foreach($CMSFields as $f) { $name_list[] = $f->getName(); }
+                $db = Config::inst()->get($class, 'db', Config::UNINHERITED);
+                if($db) {
+                    foreach($db as $field => $type) {
+                        $list_index = array_search($field, $name_list);
+                        $next_field_name = isset($name_list[$list_index+1]) ? $name_list[$list_index+1] : false;
+                        $tab = $CMSFields->getTabForField($field);
+                        $after = $CMSFields->getFieldAfter($field);
+                        $before = false;
+                        if($next_field_name && $after != $next_field_name) {
+                            $before = $after;
+                        }
+                        if(!isset($node['Fields'])) $node['Fields'] = array ();
+                        $node['Fields'][$field] = array (
+                            'CMSField' => $CMSFields->dataFieldByName($field) ? $CMSFields->dataFieldByName($field)->class : null,
+                            'DBField' => $type                        
+                        );
+                        if($tab && $tab != "Main") {
+                            $node['Fields'][$field]['Tab'] = $tab;
+                        }
+                        if($before) {
+                            $node['Fields'][$field]['Before'] = $before;   
+                        }
+
+                    }
+                }   
+            }
+            $key = (is_subclass_of($class, "SiteTree")) ? "PageTypes" : "Components";
+            $yaml[$key][$class] = $node;
+        }
+        say(SilverSmithUtil::array_to_yml($yaml));
+
+    }
 
 	/**
 	 * Creates and updates the PHP code for all classes defined in the SilverSmith project configuration file

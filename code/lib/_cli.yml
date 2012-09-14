@@ -20,7 +20,10 @@ AllowedActions:
         description: 
           - The module directory in which to build 
           - code and templates. (Defaults to $project)
-  
+  sync:
+    ProjectRequired: true
+    Description: []
+    Options: {}
   build-templates:
     ProjectRequired: true
     Description: 

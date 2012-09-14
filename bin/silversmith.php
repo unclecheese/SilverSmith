@@ -78,6 +78,9 @@ if ($allowed_actions->get($action)->getProjectRequired()) {
     else {
         fail("Could not find framework directory!");
     }
+    foreach(glob("{$script_dir}/code/decorators/*.php") as $class) {
+        require_once($class);
+    }
     
     say("done.");
 
