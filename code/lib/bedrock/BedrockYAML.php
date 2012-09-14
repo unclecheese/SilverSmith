@@ -77,6 +77,21 @@ class BedrockYAML extends BedrockNode {
 		}
 		return is_array($current) ? BedrockNode::create($last_key, $current, $setting, $this) : $current;	
 	}
+
+
+
+	public function addNode($node, $parent) {		
+		if(!isset($this->source[$parent])) {
+			$this->source[$parent] = array();			
+		}
+		if(!isset($this->source[$parent][$node])) {
+			$this->source[$parent][$node] = array();
+		}
+		$fh = fopen($this->ymlPath,"w");
+		fwrite($fh, SilverSmithUtil::array_to_yml($this->source));
+		fclose($fh);					
+	}
+
 	
 }
 
