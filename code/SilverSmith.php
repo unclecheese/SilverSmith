@@ -336,6 +336,12 @@ class SilverSmith {
                 $name_list = array ();
                 foreach($CMSFields as $f) { $name_list[] = $f->getName(); }
                 $db = Config::inst()->get($class, 'db', Config::UNINHERITED);
+                $has_one = Config::inst()->get($class, 'has_one', Config::UNINHERITED);
+                $has_many = Config::inst()->get($class, 'has_many', Config::UNINHERITED);
+                $many_many = Config::inst()->get($class, 'many_many', Config::UNINHERITED);                
+                if($db || $has_one) $node['Fields'] = array ();
+                if($has_many || $many_many) $node['Components'] = array ();
+
                 if($db) {
                     foreach($db as $field => $type) {
                         $list_index = array_search($field, $name_list);
@@ -345,8 +351,7 @@ class SilverSmith {
                         $before = false;
                         if($next_field_name && $after != $next_field_name) {
                             $before = $after;
-                        }
-                        if(!isset($node['Fields'])) $node['Fields'] = array ();
+                        }                        
                         $node['Fields'][$field] = array (
                             'CMSField' => $CMSFields->dataFieldByName($field) ? $CMSFields->dataFieldByName($field)->class : null,
                             'DBField' => $type                        
@@ -358,6 +363,96 @@ class SilverSmith {
                             $node['Fields'][$field]['Before'] = $before;   
                         }
 
+                    }
+                }
+                if($has_one) {
+                    foreach($has_one as $relation => $has_one_class) {
+                        if($has_one_class == "Image" || is_subclass_of($has_one_class, "Image")) {
+                            $node['Fields'][$field][$relation] = array (
+                                'CMSField' => 'Image'
+                            );
+                            if($has_one_class != "Image") {                            
+                                $node['Fields'][$field][$relation] = array (
+                                    'ImageClass' => $has_one_class
+                                );
+                            }
+                        }
+                        elseif($has_one_class == "File" || is_subclass_of($has_one_class, "File")) {
+                            $node['Fields'][$field][$relation] = array (
+                                'CMSField' => 'File'
+                            );
+                            if($has_one_class != "File") {                            
+                                $node['Fields'][$field][$relation] = array (
+                                    'FileClass' => $has_one_class
+                                );
+                            }
+                        }
+                        // elseif($parent = Config::inst()->get($has_one_class,'has_many', Config::UNINHERITED)) {
+                        //     if(in_array($has_one_class, $parent)) {
+                        //         $n = is_subclass_of($has_one_class,"SiteTree") ? "PageTypes" : "Components";
+                        //         if(!isset($yaml[$n][$has_one_class])) {
+                        //             $yaml[$n][$has_one_class] = array ();                                    
+                        //         }
+                        //         if(!isset($yaml[$n][$has_one_class]['Components'])) {
+                        //             $yaml[$n][$has_one_class]['Components'] = array ();                                    
+                        //         }
+                        //         if(!isset($yaml[$n][$has_one_class]['Components'][$class])) {
+                        //             $yaml[$n][$has_one_class]['Components'][$class] = array (
+                        //                 'Type' => 'many',
+                        //                 'Interface' => array ('Type' => 'grid')                                        
+                        //             );
+                        //         }
+                        //     }   
+                        // }
+                        else {
+                            $node['Fields'][$field][$relation] = array (
+                                'CMSField' => 'RelationDropdown',
+                                'Map' => $has_one_class
+                            );
+                            if($tab = $CMSFields->getTabForField($field."ID")) {
+                                $node['Fields'][$field][$relation]['Tab'] = $tab;                                    
+                            }
+                            $list_index = array_search($field."ID", $name_list);
+                            $next_field_name = isset($name_list[$list_index+1]) ? $name_list[$list_index+1] : false;                            
+                            $after = $CMSFields->getFieldAfter($field."ID");
+                            $before = false;
+                            if($next_field_name && $after != $next_field_name) {
+                                $before = $after;
+                            }
+                            if($before) {
+                                $node['Fields'][$field][$relation]['Before'] = $before;
+                            }                        
+
+                        }
+                    }
+                    if($has_many || $many_many) {
+                        if(!isset($node['Components'])) $node['Components'] = array ();
+                        foreach(array('many' => $has_many, 'manymany' => $many_many) as $relation_type => $vars) {
+                            if($vars) {
+                                foreach($vars as $relation_name => $relation_class) {
+                                    if($interface = $CMSFields->dataFieldByName($relation_name)) {
+                                        if($relation_type == "many") {
+                                            $i_type = "grid";
+                                        }
+                                        else {
+                                            $i_type = $interface->class == "ListboxField" ? "listbox" : "checkboxes";
+                                        }
+                                        $node['Components'][$relation_class] = array (
+                                            'Type' => $relation_type,
+                                            'Interface' => array (
+                                                'Type' => $i_type
+                                            )
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                        if(empty($node['Components'])) {
+                            $node['Components'] = "fuckit";
+                        }
+                        if(empty($node['Fields'])) {
+                            unset($node['Fields']);
+                        }
                     }
                 }   
             }
