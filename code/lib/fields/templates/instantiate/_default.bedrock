@@ -1,0 +1,1 @@
+  <@= CMSField @>::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= Label @>'))

@@ -1,0 +1,10 @@
+<@ if Map @>
+OptionsetField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'), array(
+	<@ each Map @>
+		'<@= :Val @>' => '<@= :Val @>'
+	<@ /each @>
+));
+<@ else @>
+OptionsetField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'), array())
+<@ /if @>
+

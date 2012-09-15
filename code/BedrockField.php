@@ -81,12 +81,7 @@ class BedrockField extends SilverSmithNode {
      * @return string
      */
     public function getAutoFill() {
-        if (!$content = $this->getConfigVar('AutoFill')) {
-            $content = SilverSmithDefaults::get('AutoFill');
-        }
-        $template = new BedrockTemplate($content);
-        $template->bind($this);
-        return $template->render();
+        return $this->getConfig()->getAutoFill();
     }
     
     
@@ -137,29 +132,15 @@ class BedrockField extends SilverSmithNode {
         $fields = SilverSmith::get_field_manifest();
         if (isset($fields[$this->getCMSField()])) {            
             $config = $fields[$this->getCMSField()];
+            $config->setField($this);
             return $config;
         }
-        return new BedrockYAML(null);
+        $o = new DefaultField_Config();
+        $o->setField($this);
+        return $o;
     }
     
-    
-    
-    
-    /**
-     * Gets a given variable from the field configuration
-     *
-     * @param string The variable name
-     * @return mixed
-     */
-    public function getConfigVar($var) {
-        $result = $this->getConfig()->get($var);
-        if (substr($result, 0, 2) == "->") {
-            $func = "get" . substr($result, 2);
-            return $this->$func();
-        }
-        return $result;
-    }
-    
+        
     
     
     
@@ -172,7 +153,7 @@ class BedrockField extends SilverSmithNode {
         if ($this->get('DBField')) {
             return $this->get('DBField');
         }
-        return $this->getConfigVar('DBField');        
+        return $this->getConfig()->getDBField();
     }
     
     
@@ -184,12 +165,7 @@ class BedrockField extends SilverSmithNode {
      * @return string
      */
     public function getInstantiation() {
-        if ((!$yml = $this->getConfig()) || (!$content = $yml->getInstantiate())) {
-            $content = SilverSmithDefaults::get('InstantiateField');
-        }
-        $template = new BedrockTemplate(SilverSmithUtil::tabify(rtrim($content)));        
-        $template->bind($this);
-        $inst = $template->render();
+        $inst = $this->getConfig()->getInstantiate();
         $up   = $this->getUpdate();
         if ($up && !empty($up)) {
             return $this->getVar() . " = " . $inst;
@@ -208,13 +184,7 @@ class BedrockField extends SilverSmithNode {
      * @return string
      */
     public function getUpdate() {
-        if ($yml = $this->getConfig()) {
-            if ($content = $yml->getUpdate()) {
-                $template = new BedrockTemplate(SilverSmithUtil::tabify($content));
-                $template->bind($this);
-                return $template->render();
-            }
-        }
+        return $this->getConfig()->getUpdate();
     }
     
     
@@ -315,21 +285,6 @@ class BedrockField extends SilverSmithNode {
         return false;
     }
 
-
-
-
-    /**
-     * Takes the Map attribute of this node and builds it into a string representing
-     * an Enum fieldtype in a $db array. 
-     *
-     * @return string
-     */
-    public function getEnumField() {
-        if($this->get('Map')) {
-            return 'Enum("'.implode(',',$this->get('Map')->toArray()).'")';            
-        }
-        return 'Enum("")';
-    }
 
     
 }

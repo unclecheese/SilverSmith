@@ -1,0 +1,2 @@
+<% if <@= Name @> %><div><strong><@= Label @></strong>: $<@= Name @>.Nice</div><% end_if %>
+  

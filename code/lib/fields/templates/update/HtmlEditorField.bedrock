@@ -1,0 +1,7 @@
+<@ if Rows @>
+<@= Var @>->setRows(<@= Rows @>);
+<@ /if @>
+<@ if Cols @>
+<@= Var @>->setCols(<@= Cols @>);
+<@ /if @>
+

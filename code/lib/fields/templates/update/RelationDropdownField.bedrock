@@ -1,0 +1,8 @@
+<@ if LabelField @>
+		<@= Var @>->setSource(<@= Map @>::get()->map('ID','<@= LabelField @>'));
+<@ else @>
+		<@= Var @>->setSource(<@= Map @>::get()->map());
+<@ /if @>
+<@ if EmptyString @>
+		<@= Var @>->setEmptyString(_t('<@= Name @>.EMPTYSTRING','<@= EmptyString @>'));
+<@ /if @>

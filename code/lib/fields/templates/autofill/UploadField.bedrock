@@ -1,0 +1,2 @@
+<% if <@= Name @> %><a href="$<@= Name @>.URL">Download <@= Label @> ($<@= Name @>.Size)</a><% end_if %>
+

@@ -137,29 +137,14 @@ class SilverSmith {
 	 * @return void
 	 */
 	public static function load_field_manifest() {
-    	foreach (glob(self::$script_dir . '/code/lib/fields/*.yml') as $file) {
-	        $yml = new BedrockYAML($file);
-	        self::$field_manifest[basename($file, ".yml")] = $yml;
-	        if ($yml->getAliases()) {
-	            foreach ($yml->getAliases() as $alias) {
-	                self::$field_manifest[(string) $alias] = $yml;
-	            }
-	        }
-    	}
-    	foreach (scandir(self::$script_dir . '/plugins') as $dir) {
-        	if ($dir == "." || $dir == "..")
-            	continue;
-	        if (is_dir($dir)) {
-	            foreach (glob(self::$script_dir . "/plugins/$dir/*.yml") as $file) {
-	                $yml = new BedrockYAML($file);
-	                if ($yml->getPluginType() == "field") {
-	                    self::$field_manifest[basename($file, ".yml")] = $yml;
-	                    if ($yml->getAliases()) {
-	                        foreach ($yml->getAliases() as $alias) {
-	                            self::$field_manifest[$alias] = $yml;
-	                        }
-	                    }
-	                }
+    	foreach (glob(self::$script_dir . '/code/lib/fields/*.php') as $file) {
+            require_once($file);
+            $class = basename($file,".php");
+            $o = new $class();
+	        self::$field_manifest[$class] = $o;
+	        if ($o->getAliases()) {
+	            foreach ($o->getAliases() as $alias) {
+	                self::$field_manifest[$alias] = $o;
 	            }
 	        }
     	}
@@ -340,7 +325,6 @@ class SilverSmith {
                 $has_many = Config::inst()->get($class, 'has_many', Config::UNINHERITED);
                 $many_many = Config::inst()->get($class, 'many_many', Config::UNINHERITED);                
                 if($db || $has_one) $node['Fields'] = array ();
-                if($has_many || $many_many) $node['Components'] = array ();
 
                 if($db) {
                     foreach($db as $field => $type) {
@@ -387,23 +371,6 @@ class SilverSmith {
                                 );
                             }
                         }
-                        // elseif($parent = Config::inst()->get($has_one_class,'has_many', Config::UNINHERITED)) {
-                        //     if(in_array($has_one_class, $parent)) {
-                        //         $n = is_subclass_of($has_one_class,"SiteTree") ? "PageTypes" : "Components";
-                        //         if(!isset($yaml[$n][$has_one_class])) {
-                        //             $yaml[$n][$has_one_class] = array ();                                    
-                        //         }
-                        //         if(!isset($yaml[$n][$has_one_class]['Components'])) {
-                        //             $yaml[$n][$has_one_class]['Components'] = array ();                                    
-                        //         }
-                        //         if(!isset($yaml[$n][$has_one_class]['Components'][$class])) {
-                        //             $yaml[$n][$has_one_class]['Components'][$class] = array (
-                        //                 'Type' => 'many',
-                        //                 'Interface' => array ('Type' => 'grid')                                        
-                        //             );
-                        //         }
-                        //     }   
-                        // }
                         else {
                             $node['Fields'][$field][$relation] = array (
                                 'CMSField' => 'RelationDropdown',
@@ -446,12 +413,6 @@ class SilverSmith {
                                     }
                                 }
                             }
-                        }
-                        if(empty($node['Components'])) {
-                            $node['Components'] = "fuckit";
-                        }
-                        if(empty($node['Fields'])) {
-                            unset($node['Fields']);
                         }
                     }
                 }   

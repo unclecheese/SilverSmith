@@ -1,0 +1,2 @@
+<% if <@= Name @> %><strong><@= Label @></strong>: $<@= Name @>.Title<% end_if %>
+

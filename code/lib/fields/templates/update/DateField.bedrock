@@ -1,0 +1,5 @@
+<@ if Style == 'dmy' @>
+		<@= Var @>->setConfig('dmyfields',true);
+<@ else @>
+		<@= Var @>->setConfig('showcalendar',true);
+<@ /if @>

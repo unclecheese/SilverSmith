@@ -18,7 +18,3 @@ Before: NULL
 CMSField: TextField 
 Map: SiteTree 
 EntityWordCount: 4
-InstantiateField: |
-  new <@= CMSField @>('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= Label @>'))
-AutoFill: |
-  <div><strong><@= Label @></strong>: $<@= Name @></div>

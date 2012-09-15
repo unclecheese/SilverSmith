@@ -1,0 +1,8 @@
+<@ if Map @>
+DropdownField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'), array(
+<@ each Map @>
+			'<@= :Val @>' => '<@= :Val @>',
+<@ /each @>
+		))<@ else @>
+DropdownField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>','<@= EscapedLabel @>'), array())
+<@ /if @>

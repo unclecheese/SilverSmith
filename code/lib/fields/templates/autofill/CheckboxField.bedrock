@@ -1,0 +1,1 @@
+<% if <@= Name @> %><@= Name @> is checked.<% else %><@= Name @> is not checked.<% end_if %>

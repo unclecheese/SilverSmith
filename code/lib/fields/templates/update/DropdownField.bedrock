@@ -1,0 +1,3 @@
+<@ if EmptyString @>
+		<@= Var @>->setEmptyString("<@= EmptyString @>");
+<@ /if @>	

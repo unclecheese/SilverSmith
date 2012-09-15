@@ -1,0 +1,13 @@
+<@ if UploadFolder @>
+    		<@= Var @>->setFolderName('<@= UploadFolder @>');
+<@ /if @>  
+    		<@= Var @>->getValidator()->setAllowedExtensions(array('jpg', 'jpeg', 'png', 'gif'));
+<@ if ManualUpload @>
+    		<@= Var @>->setConfig('autoUpload', false);
+<@ /if @>
+<@ if PreviewWidth @>
+    		<@= Var @>->setConfig('previewMaxWidth', <@= PreviewWidth @>);
+<@ /if @>
+<@ if PreviewHeight @>
+    		<@= Var @>->setConfig('previewMaxHeight', <@= PreviewHeight @>);
+<@ /if @>
