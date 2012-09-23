@@ -1,0 +1,10 @@
+<@ if Decorator @>
+	public function updateGeneratedCMSFields(FieldList $fields) {
+<@ else @>
+	public function getGeneratedCMSFields() {
+		$fields = parent::getCMSFields();
+<@ /if @>
+
+		<@= GeneratedCMSFieldsContent @>
+
+	}

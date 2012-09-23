@@ -2,20 +2,16 @@
 
 class <@= Key @> extends <@= Parent @> {
 
-	/** //--// **/
 
-<@= GeneratedCode @>
+	<@= GetCMSFields @>
 
-	/** --//-- **/
-	
-<@ if IsFinal @>
-<@= GetCMSFieldsCode @>	
-<@ /if @>
+
+	<@= GetGeneratedCMSFields @>
+
 
 }
 
 class <@= Key @>_Controller extends <@= Parent @>_Controller {
 	
-	/** /-/ **//** -/- **/
 
 }

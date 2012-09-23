@@ -1,5 +1,0 @@
-Label: Notes
-Aliases: [Literal, Notes]
-Instantiate: |
-  LiteralField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
-AutoFill: NULL

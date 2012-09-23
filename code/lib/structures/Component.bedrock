@@ -2,26 +2,23 @@
 
 class <@= Key @> extends <@= Parent @> {
 	
-	/** //--// **/
 
-<@= GeneratedCode @>
+	<@= StaticVars @>
 
-	/** --//-- **/
 
-<@ if IsFinal @>
-	public function getCMSFields() {
-		$fields = $this->getGeneratedCMSFields();
-		return $fields;
-	}
-<@ /if @>
+	<@= GetCMSFields @>
 
-	public function canCreate($member = null) { return true; }
+
+	<@= GetGeneratedCMSFields @>
+
+
+	public function canCreate($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
 	
-	public function canView($member = null) { return true; }
+	public function canView($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
 	
-	public function canEdit($member = null) { return true; }
+	public function canEdit($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
 
-	public function canDelete($member = null) { return true; }
+	public function canDelete($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
 	
 	
 	

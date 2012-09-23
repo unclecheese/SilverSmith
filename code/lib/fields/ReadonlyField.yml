@@ -1,5 +1,0 @@
-DBField: Varchar(255)
-Label: Readonly field
-Aliases: [Readonly]
-Instantiate: |
-  ReadonlyField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))

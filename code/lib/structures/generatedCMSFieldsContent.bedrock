@@ -1,0 +1,22 @@
+<@ if Fields @><@ each Fields @>
+		$fields->addFieldToTab("<@= Tab @>", <@= Instantiation @><@ if Tab == "Root.Content.Main" @>, 'Content'<@ elseif Before @>, '<@= Before @>'<@ /if @>);
+<@ /each @><@ /if @>
+<@ if Components @><@ each Components @>
+<@ if Instantiation @>
+		$fields->addFieldToTab("<@= Tab @>", <@= Instantiation @>);
+<@ /if @>
+<@ /each @><@ /if @>
+<@ if Fields @><@ each Fields @>
+<@= Update @>
+<@ /each @><@ /if @>
+<@ if Components @><@ each Components @>
+<@= Update @>
+<@ /each @><@ /if @>
+<@ if Hide @><@ each Hide @>
+		$fields->removeByName('<@= :Val @>');
+<@ /each @><@ /if @>
+<@ if HideFromTab @><@ each HideFromTab @>
+		$fields->removeFieldFromTab("<@= :Name @>", '<@= :Val @>');
+<@ /each @><@ /if @>
+
+		return $fields;

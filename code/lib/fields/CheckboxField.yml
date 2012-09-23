@@ -1,7 +1,0 @@
-DBField: Boolean
-Label: Checkbox
-Aliases: [Checkbox]
-Instantiate: |
-  CheckboxField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
-AutoFill: |
-  <% if <@= Name @> %><@= Name @> is checked.<% else %><@= Name @> is not checked.<% end_if %>

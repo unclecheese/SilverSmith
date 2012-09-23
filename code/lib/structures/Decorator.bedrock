@@ -2,16 +2,16 @@
 
 class <@= Key @>Decorator extends DataExtension
 {
-	/** //--// **/
 
-	<@= GeneratedCode @>
 
-	/** --//-- **/
+	<@= StaticVars @>
 
-	public function updateCMSFields(FieldList $fields) {
-		$this->updateGeneratedCMSFields($fields);		
-	}
 
-	
+
+	<@= GetCMSFields @>
+
+
+
+	<@= GetGeneratedCMSFields @>
 	
 }
