@@ -309,6 +309,9 @@ class BedrockField extends SilverSmithNode {
      * @return string
      */
     public function getBefore() {
+        if($this->get('Before')) {
+            return $this->get('Before');
+        }
         if(!$this->get('Tab') && $this->getIsPage()) {
             return "Content";
         }
