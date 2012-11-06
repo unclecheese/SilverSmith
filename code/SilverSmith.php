@@ -1135,7 +1135,12 @@ class SilverSmith {
             say("");
         }
         $required = SilverSmithSpec::get("PageType.RequiredNodes");
-        if($required) $required = $required->toArray();
+        if($required) {
+            $required = $required->toArray();
+        }
+        else {
+            $required = array ();
+        }
 
         foreach (SilverSmithSpec::get("PageType.AvailableNodes") as $key => $node) {
             if (in_array($key, array(
