@@ -2,8 +2,9 @@ HasOne: ->Map
 Label: Relation dropdown
 Aliases: [Relation, RelationDropdown]
 Instantiate: |
-  DropdownField::create('<@= Name @>ID', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
+  <@ if Map == 'SiteTree' @>TreeDropdownField::create('<@= Name @>ID', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'), 'SiteTree', 'ID','<@ if LabelField @><@= LabelField @><@ else @>MenuTitle<@ /if @>')<@ else @>DropdownField::create('<@= Name @>ID', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))<@ /if @>
 Update: |  
+  <@ if Map != 'SiteTree' @>
   <@ if LabelField @>
   {T}{T}<@= Var @>->setSource(<@= Map @>::get()->map('ID','<@= LabelField @>'));
   <@ else @>
@@ -11,6 +12,7 @@ Update: |
   <@ /if @>
   <@ if EmptyString @>
   {T}{T}<@= Var @>->setEmptyString(_t('<@= Name @>.EMPTYSTRING','<@= EmptyString @>'));
+  <@ /if @>
   <@ /if @>
 AutoFill: |
   <% if <@= Name @> %><strong><@= Label @></strong>: $<@= Name @>.Title<% end_if %>
