@@ -170,7 +170,7 @@ class BedrockDataRecord extends SilverSmithNode {
      *
      * @return bool
      */
-    public function getDecorator() {
+    public function getDecorator() {        
         return class_exists($this->getKey()) && !file_exists(SilverSmith::get_project_dir()."/code/{$this->key}.php");
     }
     
@@ -188,8 +188,7 @@ class BedrockDataRecord extends SilverSmithNode {
         $path = SilverSmith::get_script_dir() . "/code/lib/structures/{$file}.bedrock";
         if (file_exists($path)) {
             $template = new BedrockTemplate(file_get_contents($path));
-            $template->bind($this);
-            
+            $template->bind($this);            
             return $template->render();
         }
         
@@ -271,8 +270,7 @@ class BedrockDataRecord extends SilverSmithNode {
      */
     public function getGetCMSFieldsCode() {
         $template = new BedrockTemplate(file_get_contents(SilverSmith::get_script_dir() . "/code/lib/structures/getCMSFields.bedrock"));
-        $template->bind($this);
-        
+        $template->bind($this);        
         return $template->render();
     }
     
@@ -293,8 +291,9 @@ class BedrockDataRecord extends SilverSmithNode {
         $content          = str_replace("<?php", "[?php", $content);
         $content          = SilverSmithUtil::replace_tags(BedrockDataRecord::$model_open, BedrockDataRecord::$model_close, "\n\n<@= GeneratedCode @>\n\n\t", $content);
         $template         = new BedrockTemplate($content);
-        $template->bind($this);
+        $template->bind($this);        
         $new_content = str_replace("[?php", "<?php", $template->render());
+            
         // Ensure getCMSFields		
         if ($this->getIsFinal()) {
             $func = $this->getDecorator() ? "updateCMSFields" : "getCMSFields";
@@ -340,7 +339,7 @@ class BedrockDataRecord extends SilverSmithNode {
         $stock    = $this->getDecorator() ? "Decorator" : $this->getContentType();
         $content  = file_get_contents(SilverSmith::get_script_dir() . "/code/lib/structures/$stock.bedrock");
         $template = new BedrockTemplate($content);
-        $template->bind($this);
+        $template->bind($this);        
         $new_content = str_replace("[?php", "<?php", $template->render());
         $fh          = fopen($path, "w");
         fwrite($fh, $new_content);

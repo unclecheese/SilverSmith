@@ -26,11 +26,11 @@ class BedrockComponent extends BedrockDataRecord {
      *
      * @return string|bool
      */
-    public function getHolder() {
+    public function getHolder() {        
         if ($parent = $this->getParentNode()) {
             if ($parent->key == "Components") {
                 if ($grandparent = $parent->getParentNode()) {
-                    return $grandparent;
+                    return $grandparent->transform("BedrockComponent");
                 }
             }
         }
@@ -102,7 +102,8 @@ class BedrockComponent extends BedrockDataRecord {
         if (file_exists($path)) {
             $template = new BedrockTemplate(file_get_contents($path));
             $template->bind($this);
-            return $template->render();
+            $code = $template->render();
+            return $code;
         }
     }
     
@@ -120,7 +121,7 @@ class BedrockComponent extends BedrockDataRecord {
         if ($yml = $this->getInterfaceConfig()) {
             if ($content = $yml->getInstantiate()) {
                 $template = new BedrockTemplate(SilverSmithUtil::tabify(rtrim($content)));
-                $template->bind($this);
+                $template->bind($this);                
                 $inst = $template->render();
                 $up   = $this->getUpdate();
                 if ($up && !empty($up)) {
@@ -160,7 +161,7 @@ class BedrockComponent extends BedrockDataRecord {
     {
         if ($yml = $this->getInterfaceConfig()) {
             if ($content = $yml->getUpdate()) {
-                $template = new BedrockTemplate(SilverSmithUtil::tabify($content));
+                $template = new BedrockTemplate(SilverSmithUtil::tabify($content));                
                 $template->bind($this);
                 return $template->render();
             }

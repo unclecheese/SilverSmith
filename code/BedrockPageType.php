@@ -42,7 +42,7 @@ class BedrockPageType extends BedrockDataRecord {
         $path = SilverSmith::get_script_dir() . "/code/lib/structures/PageTypeCode.bedrock";
         if (file_exists($path)) {
             $template = new BedrockTemplate(file_get_contents($path));
-            $template->bind($this);                        
+            $template->bind($this);                                    
             return $template->render();
             
         }
@@ -62,7 +62,7 @@ class BedrockPageType extends BedrockDataRecord {
             $path = SilverSmith::get_script_dir() . "/code/lib/structures/PageType.bedrock";
             if (file_exists($path)) {
                 $template = new BedrockTemplate($path);
-                $template->bind($this);
+                $template->bind($this);                
                 fwrite($fh, $template->render());
                 fclose($fh);
             }

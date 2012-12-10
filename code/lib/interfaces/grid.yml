@@ -1,3 +1,3 @@
 Relations: [all]
 Instantiate: |
-  GridField::create('<@= Name @>','<@ with Interface @><@= Title @><@ /with @>', $this-><@= Name @>(), GridFieldConfig_RecordEditor::create())
+  GridField::create('<@= Name @>','<@ with Interface @><@= Title @><@ /with @>', $this-><@ with Holder @><@ if Decorator @>owner-><@ /if @><@ /with @><@= Name @>(), GridFieldConfig_RecordEditor::create())

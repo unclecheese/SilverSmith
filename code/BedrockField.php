@@ -85,7 +85,7 @@ class BedrockField extends SilverSmithNode {
             $content = SilverSmithDefaults::get('AutoFill');
         }
         $template = new BedrockTemplate($content);
-        $template->bind($this);
+        $template->bind($this);        
         return $template->render();
     }
     
@@ -189,7 +189,7 @@ class BedrockField extends SilverSmithNode {
         }
         $template = new BedrockTemplate(SilverSmithUtil::tabify(rtrim($content)));        
         $template->bind($this);
-        $inst = $template->render();
+        $inst = $template->render();        
         $up   = $this->getUpdate();
         if ($up && !empty($up)) {
             return $this->getVar() . " = " . $inst;
@@ -211,7 +211,7 @@ class BedrockField extends SilverSmithNode {
         if ($yml = $this->getConfig()) {
             if ($content = $yml->getUpdate()) {
                 $template = new BedrockTemplate(SilverSmithUtil::tabify($content));
-                $template->bind($this);
+                $template->bind($this);                
                 return $template->render();
             }
         }
@@ -228,8 +228,9 @@ class BedrockField extends SilverSmithNode {
     public function getHolder() {
         if ($parent = $this->getParentNode()) {
             if ($parent->key == "Fields") {
-                if ($grandparent = $parent->getParentNode()) {
-                    return $grandparent;
+                if ($grandparent = $parent->getParentNode()) {                
+                    $ret = $this->getIsAPage() ? $grandparent->transform("BedrockPageType") : $gransparent->transform("BedrockComponent");
+                    return $ret;
                 }
             }
         }

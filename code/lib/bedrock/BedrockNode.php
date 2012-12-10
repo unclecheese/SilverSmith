@@ -226,6 +226,13 @@ class BedrockNode implements IteratorAggregate, Countable
 
 	}
 
+
+
+
+	public function getNodeClass() {
+		return get_class($this);
+	}
+
 	
 
 	

@@ -20,6 +20,11 @@ AllowedActions:
         description: 
           - The module directory in which to build 
           - code and templates. (Defaults to $project)
+      debug:
+        arg: "--debug"
+        description:
+          - Show the raw template code for each class
+          - created
   
   build-templates:
     ProjectRequired: true

@@ -68,6 +68,15 @@ class SilverSmith {
 
 
 
+
+    /**
+     * @var string The debug output
+     */
+    protected static $debug_output = "";
+
+
+
+
     /**
      * Gets all of the subclasses for a given parent
      *
@@ -296,6 +305,18 @@ class SilverSmith {
 
 
 
+    /**
+     * Logs a message for output to the terminal
+     *
+     * @param string The message to log
+     */
+    public static function log($msg) {
+        self::$debug_output .= "\n\n\n\n$msg";
+    }
+
+
+
+
 	/**
 	 * A wildcard method for all static function calls. Allows automatic getters and setters
 	 *
@@ -467,7 +488,10 @@ class SilverSmith {
         say(cell("", 50) . cell("Created", 10, true, "white", "on_green") . cell("Updated", 10, true, "white", "on_blue") . cell("Total", 10, true, "white", "on_red"));
         say(cell("Page types:", 50) . cell($page_types_created, 10) . cell($page_types_updated, 10) . cell($page_types, 10));
         
-        
+        if(isset($params['debug'])) {
+            say("Debug output:", "cyan");
+            say(self::$debug_output);
+        }
     }    
         
         
