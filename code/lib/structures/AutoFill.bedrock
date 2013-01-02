@@ -1,6 +1,7 @@
 <@ if Fields @>
 <@ each Fields @>
 		<@= AutoFill @>
+
 <@ /each @>
 <@ /if @>
 
@@ -12,6 +13,7 @@
 <@ if DefinedFields @>
 <@ each DefinedFields @>
 				<@= AutoFill @>
+
 <@ /each @>
 <@ /if @>
 <@ if Components @>
@@ -22,6 +24,7 @@
 <@ if DefinedFields @>
 <@ each DefinedFields @>
 						<@= AutoFill @>
+						
 <@ /each @>
 <@ /if @>
 				<% end_loop %>

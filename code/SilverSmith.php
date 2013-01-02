@@ -345,7 +345,7 @@ class SilverSmith {
 	 * @see "silversmith help"	 
 	 * @param The parameters, e.g. from the command line
 	 */
-    public static function build_code($params = array ()) {
+    public static function build_code($params = array ()) {        
         state("Validating project definition...");
         $validator = new SilverSmithSpec_Validator(self::$yaml_path);
         $errors    = $validator->getErrors();

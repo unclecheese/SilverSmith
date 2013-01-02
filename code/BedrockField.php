@@ -229,7 +229,9 @@ class BedrockField extends SilverSmithNode {
         if ($parent = $this->getParentNode()) {
             if ($parent->key == "Fields") {
                 if ($grandparent = $parent->getParentNode()) {                
-                    $ret = $this->getIsAPage() ? $grandparent->transform("BedrockPageType") : $gransparent->transform("BedrockComponent");
+                    $ret = $this->getIsAPage() ? 
+                        $grandparent->transform("BedrockPageType") : 
+                        $grandparent->transform("BedrockComponent");
                     return $ret;
                 }
             }
@@ -261,7 +263,7 @@ class BedrockField extends SilverSmithNode {
      * @return bool
      */
     public function getIsPage() {
-        if ($this->getHolder()->getKey() == "SiteConfig")
+        if ($this->getHolder()->getKey() == "SiteConfig") 
             return false;
         $parts = explode('.', $this->path);
         return ($parts[sizeof($parts) - 4] == "PageTypes");
