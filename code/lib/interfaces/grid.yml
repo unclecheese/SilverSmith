@@ -1,3 +1,9 @@
 Relations: [all]
 Instantiate: |
   GridField::create('<@= Name @>','<@ with Interface @><@= Title @><@ /with @>', $this-><@ with Holder @><@ if Decorator @>owner-><@ /if @><@ /with @><@= Name @>(), GridFieldConfig_RecordEditor::create())
+Update: |
+  <@ with Interface @>
+  <@ if AddTitle @>
+  {T}{T}<@= Var @>->getConfig()->getComponentByType("GridFieldAddNewButton")->setButtonName("<@= AddTitle @>");
+  <@ /if @>
+  <@ /with @>
