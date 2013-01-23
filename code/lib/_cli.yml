@@ -83,7 +83,7 @@ AllowedActions:
       - ""
       - Examples
       - silversmith build-fixtures
-      - sivlersmith build-fixtures -seeding-level 2
+      - silversmith build-fixtures -seeding-level 2
     Options:
       file:
         arg: "-file"

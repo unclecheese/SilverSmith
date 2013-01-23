@@ -97,7 +97,7 @@ class SilverSmithSpec {
 /**
  * A class that validates a given project configuration file based on the spec.yml	
  *
- * @package SivlerSmith
+ * @package SilverSmith
  * @author Aaron Carlino <unclecheese@leftandmain.com>
  */
 class SilverSmithSpec_Validator {
