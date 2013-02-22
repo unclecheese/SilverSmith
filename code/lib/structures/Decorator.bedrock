@@ -15,3 +15,5 @@ class <@= Key @>Decorator extends DataExtension
 	
 	
 }
+
+Object::add_extension("<@= Key @>", "<@= Key @>Decorator");

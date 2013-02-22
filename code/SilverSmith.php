@@ -422,28 +422,6 @@ class SilverSmith {
             }
             
         }
-        if (!empty($decorators)) {
-            line();
-            $config = trim(file_get_contents(self::$project_dir."/_config.php"));
-            if (substr($config, 0, -2) == "?>") {
-                $config = substr_replace($config, "", 0, -2);
-            }
-            $added = 0;
-            foreach ($decorators as $classname) {
-                if (!Object::has_extension($classname, $classname . "Decorator")) {
-                    say("Adding decorator to $classname", "green");
-                    $config .= "\nObject::add_extension('$classname','{$classname}Decorator');";
-                    $added++;
-                }
-            }
-            if ($added > 0) {
-                say("Added $added decorator declaration(s) to the _config.php file.", "green");
-            }
-            $fh = fopen(self::$project_dir."/_config.php", "w");
-            fwrite($fh, $config);
-            fclose($fh);
-            
-        }
         
         
         state("Rebuilding database...");
