@@ -25,6 +25,10 @@ AllowedActions:
         description:
           - Show the raw template code for each class
           - created
+      flush:
+        arg: "--flush"
+        description:
+          - Force a flush of the manifest
   
   build-templates:
     ProjectRequired: true

@@ -249,9 +249,7 @@ class SilverSmith {
 	 *
 	 * @todo Can't figure out how to do this in SS3
 	 */
-	public static function rebuild_manifest() {
-	    // exec("rm -" . TEMP_FOLDER);
-	    // exec("mkdir " . TEMP_FOLDER);
+	public static function rebuild_manifest() {        
 	}
 
 
@@ -425,6 +423,7 @@ class SilverSmith {
         
         
         state("Rebuilding database...");
+        self::rebuild_manifest();
         $db = self::rebuild_database();
         say("done.");
         $tables_created = 0;

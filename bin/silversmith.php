@@ -25,7 +25,6 @@ SilverSmith::set_git_path(trim(shell_exec("which git")));
 SilverSmithDefaults::load(SilverSmith::get_script_dir() . "/code/lib/_defaults.yml");
 SilverSmithSpec::load(SilverSmith::get_script_dir() . "/code/lib/_spec.yml");
 
-
 // Validation for the CLI commands
 $commands = new BedrockYAML(SilverSmith::get_script_dir() . "/code/lib/_cli.yml");
 $allowed_actions = $commands->getAllowedActions();
@@ -63,21 +62,26 @@ if ($allowed_actions->get($action)->getProjectRequired()) {
     if (!isset($_SERVER['REQUEST_METHOD'])) {
         $_SERVER['REQUEST_METHOD'] = "";
     }
-    define('BASE_PATH', getcwd());
+    define('BASE_PATH', getcwd());    
+
     global $databaseConfig;
     $_SESSION = null;
     state("Including SilverStripe core...");
     if(file_exists("sapphire/core/Core.php")) {
-        require_once("sapphire/core/Core.php");
-        require_once("sapphire/model/DB.php");
+        $framework_dir = "sapphire";
     }
     elseif(file_exists("framework/core/Core.php")) {
-        require_once("framework/core/Core.php");
-        require_once("framework/model/DB.php");        
+        $framework_dir = "framework";
     }
     else {
         fail("Could not find framework directory!");
     }
+    require_once($framework_dir."/core/TempPath.php");
+    if(isset($PARAMS['flush'])) {
+        exec("rm -rf " . getTempFolder(BASE_PATH));
+    }
+    require_once($framework_dir."/core/Core.php");
+    require_once($framework_dir."/model/DB.php");
     
     say("done.");
 
