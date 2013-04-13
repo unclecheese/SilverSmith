@@ -1014,6 +1014,14 @@ class SilverSmith {
         fwrite($fh, "<?php\n");
         fclose($fh);
         say("$d/_config.php");
+        
+        mkdir("$d/_config");
+        say("$d/_config");
+        
+        $fh = fopen("$d/_config/_config.yml", "w");
+        fwrite($fh, "---\nName: $d\nAfter: 'framework/*','cms/*'\n");
+        fclose($fh);
+        say("$d/_config/_config.yml");
     }
     
 
