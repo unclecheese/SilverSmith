@@ -9,17 +9,21 @@
 
 
 <@ /if @>
+<@ if Searchable @>
+	static $searchable_fields = array (
+<@ each Searchable @>
+		'<@= :Name @>' => '<@= :Val @>',
+<@ /each @>
+	);
+
+
+<@ /if @>
 <@ if IsFinal @>
 <@ if Decorator @>
 	public function updateGeneratedCMSFields(FieldList $fields) {
 <@ else @>
 	public function getGeneratedCMSFields() {
-                $parentClassName = get_parent_class($this);
-                $parentClass = new $parentClassName;
-                $fields = ($parentClass->hasMethod('getGeneratedCMSFields'))
-                    ? $parentClass->getGeneratedCMSFields()
-                    : FieldList::create(TabSet::create("Root"));
-
+		$fields = FieldList::create(TabSet::create("Root"));
 <@ /if @>
 <@ else @>
 <@ if Decorator @>
