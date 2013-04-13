@@ -32,15 +32,6 @@
 
 
 <@ /if @>
-<@ if Searchable @>
-	static $searchable_fields = array (
-<@ each Searchable @>
-		'<@= :Name @>' => '<@= :Val @>',
-<@ /each @>
-	);
-
-
-<@ /if @>
 <@ if IsFinal @>
 <@ if Decorator @>
 	public function updateGeneratedCMSFields(FieldList $fields) {

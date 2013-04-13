@@ -75,10 +75,6 @@ PageType:
       DataType: setting
       Description: An array of Component objects that define the custom data relationships for this page type
       Example: ""
-    Searchable:
-      DataType: setting
-      Description: "Key/value paris of FieldName: SearchFilter defining the fields that get searched by default"
-      Example: "{Title: StartsWith, Content: PartialMatch}"      
       
 Field:  
   DataType: setting
@@ -147,7 +143,3 @@ Component:
       DataType: setting
       Description: "Key/value pairs of FieldName: Label defining the fields displayed in the list view in a results table"
       Example: "{Jobtitle: Job title}"
-    Searchable:
-      DataType: setting
-      Description: "Key/value paris of FieldName: SearchFilter defining the fields that get searched by default"
-      Example: "{Title: StartsWith, Content: PartialMatch}"
