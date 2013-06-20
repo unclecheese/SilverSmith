@@ -184,8 +184,7 @@ class BedrockDataRecord extends SilverSmithNode {
      * @return BedrockNode
      */
     public function getModelVars() {        
-        $file = $this->getDecorator() ? "ModelVarsDecorator" : "ModelVars";
-        $path = SilverSmith::get_script_dir() . "/code/lib/structures/{$file}.bedrock";
+        $path = SilverSmith::get_script_dir() . "/code/lib/structures/ModelVars.bedrock";
         if (file_exists($path)) {
             $template = new BedrockTemplate(file_get_contents($path));
             $template->bind($this);            
