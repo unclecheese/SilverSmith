@@ -170,8 +170,8 @@ class BedrockDataRecord extends SilverSmithNode {
      *
      * @return bool
      */
-    public function getDecorator() {        
-        return class_exists($this->getKey()) && !$this->recursive_file_exists($this->key.'.php' , SilverSmith::get_project_dir().'/code/');
+    public function getDecorator() {    
+        return class_exists($this->getKey()) && $this->recursive_file_exists($this->key.'.php' , SilverSmith::get_project_dir().'/code/') === false;
     }
     
     
@@ -231,14 +231,14 @@ class BedrockDataRecord extends SilverSmithNode {
      * @return string
      */
     public function getFilePath() {
-        $subdir = $this->recursive_file_exists($this->key.'.php', SilverSmith::get_project_dir().'/code/');        
         if ($this->getDecorator()) {
             //search if Decorator exists already
-            if ($subdir = $this->recursive_file_exists("{$this->key}Decorator.php", SilverSmith::get_project_dir().'/code/')) {
-                return SilverSmith::get_project_dir()."/code/{$subdir}{$this->key}Decorator.php";
-            }
-            return SilverSmith::get_project_dir()."/code/{$this->key}Decorator.php";
+            $subdir = $this->recursive_file_exists("{$this->key}Decorator.php", SilverSmith::get_project_dir().'/code/');
+            return SilverSmith::get_project_dir()."/code/{$subdir}{$this->key}Decorator.php";
+           
         }
+
+        $subdir = $this->recursive_file_exists($this->key.'.php', SilverSmith::get_project_dir().'/code/');        
         return SilverSmith::get_project_dir()."/code/{$subdir}{$this->key}.php";
     }
     
@@ -472,7 +472,7 @@ class BedrockDataRecord extends SilverSmithNode {
         {
             //check if it exists in $directory
             if (file_exists($directory.$filename)) {
-                return $directory;
+                return '';
             }
             
             //check all subdirectories            
