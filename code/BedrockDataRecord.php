@@ -171,7 +171,7 @@ class BedrockDataRecord extends SilverSmithNode {
      * @return bool
      */
     public function getDecorator() {        
-        return class_exists($this->getKey()) && !file_exists(SilverSmith::get_project_dir()."/code/{$this->key}.php");
+        return class_exists($this->getKey()) && !$this->recursive_file_exists($this->key.'.php' , SilverSmith::get_project_dir().'/code/');
     }
     
     
@@ -231,10 +231,15 @@ class BedrockDataRecord extends SilverSmithNode {
      * @return string
      */
     public function getFilePath() {
+        $subdir = $this->recursive_file_exists($this->key.'.php', SilverSmith::get_project_dir().'/code/');        
         if ($this->getDecorator()) {
+            //search if Decorator exists already
+            if ($subdir = $this->recursive_file_exists("{$this->key}Decorator.php", SilverSmith::get_project_dir().'/code/')) {
+                return SilverSmith::get_project_dir()."/code/{$subdir}{$this->key}Decorator.php";
+            }
             return SilverSmith::get_project_dir()."/code/{$this->key}Decorator.php";
         }
-        return SilverSmith::get_project_dir()."/code/{$this->key}.php";
+        return SilverSmith::get_project_dir()."/code/{$subdir}{$this->key}.php";
     }
     
     
@@ -451,7 +456,34 @@ class BedrockDataRecord extends SilverSmithNode {
         return !$this->getHasSilverSmithedChildren();
     }
     
-    
+    /*
+     * Search recursively for a file in a given directory
+     *
+     * @param string $filename The file to find
+     *
+     * @param string $directory The directory to search
+     *
+     * @return string subdirectory where file exists
+     * @see http://www.phpro.org/examples/Recursive-File-Exists.html
+     */
+    function recursive_file_exists($filename, $directory)
+    {
+        try
+        {
+            foreach(new recursiveIteratorIterator($currentdir = new recursiveDirectoryIterator($directory)) as $file)
+            {
+                if( $directory.$currentdir.'/'.$filename == $file )
+                {
+                    return $currentdir . '/';
+                }
+            }
+            return false;
+        }
+        catch(Exception $e)
+        {
+             return false;
+        }
+    }     
     
     
 }
