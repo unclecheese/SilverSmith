@@ -470,6 +470,12 @@ class BedrockDataRecord extends SilverSmithNode {
     {
         try
         {
+            //check if it exists in $directory
+            if (file_exists($directory.$filename)) {
+                return $directory;
+            }
+            
+            //check all subdirectories            
             foreach(new recursiveIteratorIterator($currentdir = new recursiveDirectoryIterator($directory)) as $file)
             {
                 if( $directory.$currentdir.'/'.$filename == $file )
