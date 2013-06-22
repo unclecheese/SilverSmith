@@ -170,8 +170,8 @@ class BedrockDataRecord extends SilverSmithNode {
      *
      * @return bool
      */
-    public function getDecorator() {        
-        return class_exists($this->getKey()) && !file_exists(SilverSmith::get_project_dir()."/code/{$this->key}.php");
+    public function getDecorator() {    
+        return class_exists($this->getKey()) && $this->recursive_file_exists($this->key.'.php' , SilverSmith::get_project_dir().'/code/') === false;
     }
     
     
@@ -232,9 +232,14 @@ class BedrockDataRecord extends SilverSmithNode {
      */
     public function getFilePath() {
         if ($this->getDecorator()) {
-            return SilverSmith::get_project_dir()."/code/{$this->key}Decorator.php";
+            //search if Decorator exists already
+            $subdir = $this->recursive_file_exists("{$this->key}Decorator.php", SilverSmith::get_project_dir().'/code/');
+            return SilverSmith::get_project_dir()."/code/{$subdir}{$this->key}Decorator.php";
+           
         }
-        return SilverSmith::get_project_dir()."/code/{$this->key}.php";
+
+        $subdir = $this->recursive_file_exists($this->key.'.php', SilverSmith::get_project_dir().'/code/');        
+        return SilverSmith::get_project_dir()."/code/{$subdir}{$this->key}.php";
     }
     
     
@@ -451,7 +456,40 @@ class BedrockDataRecord extends SilverSmithNode {
         return !$this->getHasSilverSmithedChildren();
     }
     
-    
+    /*
+     * Search recursively for a file in a given directory
+     *
+     * @param string $filename The file to find
+     *
+     * @param string $directory The directory to search
+     *
+     * @return string subdirectory where file exists
+     * @see http://www.phpro.org/examples/Recursive-File-Exists.html
+     */
+    function recursive_file_exists($filename, $directory)
+    {
+        try
+        {
+            //check if it exists in $directory
+            if (file_exists($directory.$filename)) {
+                return '';
+            }
+            
+            //check all subdirectories            
+            foreach(new recursiveIteratorIterator($currentdir = new recursiveDirectoryIterator($directory)) as $file)
+            {
+                if( $directory.$currentdir.'/'.$filename == $file )
+                {
+                    return $currentdir . '/';
+                }
+            }
+            return false;
+        }
+        catch(Exception $e)
+        {
+             return false;
+        }
+    }     
     
     
 }
