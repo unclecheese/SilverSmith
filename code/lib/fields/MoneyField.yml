@@ -1,5 +1,0 @@
-DBField: Money
-Label: Money
-Aliases: []
-Instantiate: |
-  MoneyField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
