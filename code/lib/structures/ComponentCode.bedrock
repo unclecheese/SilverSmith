@@ -23,7 +23,12 @@
 	public function updateGeneratedCMSFields(FieldList $fields) {
 <@ else @>
 	public function getGeneratedCMSFields() {
-		$fields = FieldList::create(TabSet::create("Root"));
+                $parentClassName = get_parent_class($this);
+                $parentClass = new $parentClassName;
+                $fields = ($parentClass->hasMethod('getGeneratedCMSFields'))
+                    ? $parentClass->getGeneratedCMSFields()
+                    : FieldList::create(TabSet::create("Root"));
+
 <@ /if @>
 <@ else @>
 <@ if Decorator @>
