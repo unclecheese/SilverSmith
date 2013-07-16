@@ -53,13 +53,16 @@ class BedrockComponent extends BedrockDataRecord {
     /**
      * Gets the name of the component relationship, for example as defined in a $has_many
      * relation on a Page
-     *
+     * 
+     * @boolean $pluralize
      * @return string
      */
-    public function getName()
+    public function getName($pluralize = true)
     {
         if (!$this->get('Name')) {
-            return SilverSmithUtil::pluralize($this->key);
+            return $pluralize 
+                    ? SilverSmithUtil::pluralize($this->key)
+                    : $this->key;
         }
         return $this->get('Name');
     }

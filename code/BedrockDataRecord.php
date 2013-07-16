@@ -87,7 +87,7 @@ class BedrockDataRecord extends SilverSmithNode {
         if ($this->getComponents()) {
             foreach ($this->getComponents() as $c) {
                 if ($c->getType() == "one") {
-                    $has_one[$c->getClass()] = $c->getClass();
+                    $has_one[$c->getName(false)] = $c->getClass();
                 }
             }
         }
