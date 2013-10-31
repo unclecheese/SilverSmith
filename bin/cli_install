@@ -1,18 +1,18 @@
 #!/bin/sh
 
-if [ -d "/usr/local/lib/silversmith" ];then
+if [ -d "/usr/lib/silversmith" ];then
 	echo "SilverSmith CLI is already installed. Do you want to create a new installation? (y/n)"
 	read ANSWER
 	if [ "$ANSWER" = "y" ] || [ "$ANSWER" = "Y" ];then
-		sudo rm -rf /usr/local/lib/silversmith
-		sudo rm /usr/local/bin/silversmith
+		sudo rm -rf /usr/lib/silversmith
+		sudo rm /usr/bin/silversmith
 	else
 		echo "Exiting..."
 		exit
 	fi
 fi
-INSTALL_PATH="/usr/local/lib"
-BIN_PATH="/usr/local/bin"
+INSTALL_PATH="/usr/lib"
+BIN_PATH="/usr/bin"
 echo "***************** Installing SilverSmith Command-line Tools *********************"
 if [ ! -d "$INSTALL_PATH" ];then
 	echo "Path $INSTALL_PATH doesn't exist. Creating..."
@@ -21,13 +21,13 @@ fi
 cd ~
 if [ "$1" = "--admin" ];then
 	git clone git@github.com:unclecheese/SilverSmith.git silversmith
-else 	
+else
 	git clone git://github.com/unclecheese/SilverSmith.git silversmith
 fi
 if [ -d "silversmith" ];then
 	echo "Package downloaded successfully..."
 	cd $INSTALL_PATH
-	sudo mv ~/silversmith silversmith	
+	sudo mv ~/silversmith silversmith
 	if [ -d "silversmith" ];then
 		sudo chown -R $USER silversmith
 		echo "Adding symlinks..."
@@ -41,7 +41,7 @@ if [ -d "silversmith" ];then
 			echo "Symlink already exists."
 		fi
 		echo "Success!"
-	else 
+	else
 		echo "There was a problem moving the package. Exiting."
 		exit
 	fi
