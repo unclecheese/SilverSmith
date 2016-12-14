@@ -1,4 +1,4 @@
-DBField: Text
+DBField: Varchar(256)
 Label: Email
 Aliases: [Email]
 Instantiate: |
