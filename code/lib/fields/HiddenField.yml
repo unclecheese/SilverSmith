@@ -1,0 +1,5 @@
+Label: Hidden field
+Aliases: [Hidden]
+Instantiate: |
+  HiddenField::create('<@= Name @>', _t('<@= Namespace @>.<@= Entity @>', '<@= EscapedLabel @>'))
+AutoFill: NULL
