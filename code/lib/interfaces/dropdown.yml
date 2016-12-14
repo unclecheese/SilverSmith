@@ -1,0 +1,7 @@
+Relations: [one]
+Instantiate: |
+  DropdownField::create('<@= Class @>ID', _t('<@= Class @>.<@= Interface.Entity @>', '<@= Label @>'), <@= Class @>::get()->map())
+Update: |
+  <@ if EmptyString @>
+  {T}{T}<@= Interface.Var @>->setEmptyString("<@= EmptyString @>");
+  <@ /if @>
