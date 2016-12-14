@@ -56,7 +56,13 @@ class SilverSmithUtil {
             $words = array_slice($words, 0, $max_words);
         }
         $str = implode('', $words);
-        return strtoupper(singleton('SiteTree')->generateURLSegment($str));
+
+        $filter = URLSegmentFilter::create();
+        $t = $filter->filter($str);
+
+        // Fallback to generic page name if path is empty (= no valid, convertable characters)
+        if(!$t || $t == '-' || $t == '-1') $t = "page-".time();
+        return strtoupper($t);
     }
     
     
@@ -353,9 +359,14 @@ class SilverSmithUtil {
                 $fields[] = trim($f);
             }
         }
-        $site_tree   = singleton('SiteTree');
         $data_object = singleton('DataObject');
-        $is_sitetree = ($object->class == "SiteTree" || is_subclass_of($object, "SiteTree"));
+        if(class_exists('SiteTree')) {
+            $site_tree   = singleton('SiteTree');
+            $is_sitetree = ($object->class == "SiteTree" || is_subclass_of($object, "SiteTree"));
+        } else {
+            $site_tree = false;
+            $is_sitetree = false;
+        }
         foreach ($object->db() as $field => $type) {
             if ($data_object->db($field) || ($is_sitetree && $site_tree->db($field)) || (!empty($fields) && !in_array($field, $fields))) {
                 continue;
@@ -374,7 +385,7 @@ class SilverSmithUtil {
         }
         
         foreach ($object->has_one() as $relation => $class) {
-            if ($data_object->has_one($relation) || $site_tree->has_one($relation)|| (!empty($fields) && !in_array($relation, $fields))) {
+            if ($data_object->has_one($relation) || ($site_tree && $site_tree->has_one($relation))|| (!empty($fields) && !in_array($relation, $fields))) {
                 continue;
             }
             $filter = ($class == "File") ? "ClassName = 'File'" : null;
@@ -387,7 +398,7 @@ class SilverSmithUtil {
         }
         if ($level > 2) {
             foreach ($object->has_many() as $relation => $class) {
-                if ($data_object->has_many($relation) || $site_tree->has_many($relation) || !SilverSmithProject::get_node($class)|| (!empty($fields) && !in_array($relation, $fields))) {
+                if ($data_object->has_many($relation) || ($site_tree && $site_tree->has_many($relation)) || !SilverSmithProject::get_node($class)|| (!empty($fields) && !in_array($relation, $fields))) {
                     continue;
                 }
                 
@@ -412,7 +423,7 @@ class SilverSmithUtil {
             }            
             foreach ((array) $object->stat('many_many') as $relation => $class) {
                 if($class == $object->class || is_subclass_of($class, $object->class)) {continue;}
-                if ($data_object->many_many($relation) || $site_tree->many_many($relation) || !SilverSmithProject::get_node($class) || (!empty($fields) && !in_array($relation, $fields))) {
+                if ($data_object->many_many($relation) || ($site_tree && $site_tree->many_many($relation)) || !SilverSmithProject::get_node($class) || (!empty($fields) && !in_array($relation, $fields))) {
                     continue;
                 }
                 
