@@ -775,11 +775,10 @@ class Spyc {
       $this->_containsGroupAlias = false;
     }
 
+    if (!is_array ($_arr)) { $_arr = array (); }
 
     // Adding string or numeric key to the innermost level or $this->arr.
     if (is_string($key) && $key == '<<') {
-      if (!is_array ($_arr)) { $_arr = array (); }
-
       $_arr = array_merge ($_arr, $value);
     } else if ($key || $key === '' || $key === '0') {
       $_arr[$key] = $value;
